@@ -1,0 +1,10 @@
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 21:58:02.738	[31merror[0m	/Users/le/Documents/forGO/newbee-mall-api/core/server.go:38	accept tcp [::]:8888: use of closed network connection
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 21:58:26.186	[31merror[0m	/Users/le/Documents/forGO/newbee-mall-api/api/v1/manage/mall_admin_user.go:77	未查询到记录	{"error": "不存在的用户"}
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 21:58:26.491	[31merror[0m	/Users/le/Documents/forGO/newbee-mall-api/api/v1/manage/mall_admin_user.go:77	未查询到记录	{"error": "不存在的用户"}
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:01:45.319	[31merror[0m	/Users/le/Documents/forGO/newbee-mall-api/core/server.go:38	accept tcp [::]:8888: use of closed network connection
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:02:19.254	[31merror[0m	/Users/le/Documents/forGO/newbee-mall-api/core/server.go:38	accept tcp [::]:8888: use of closed network connection
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:11:33.533	[31merror[0m	/Users/le/Documents/forGO/newbee-mall-api/api/v1/manage/mall_admin_user.go:77	未查询到记录	{"error": "不存在的用户"}
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:16:08.585	[31merror[0m	/Users/le/Documents/forGO/newbee-mall-api/core/server.go:38	accept tcp [::]:8888: use of closed network connection
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:16:13.488	[31merror[0m	/Users/le/Documents/forGO/newbee-mall-api/api/v1/manage/mall_goods_category.go:57	获取失败！	{"error": "Error 1054: Unknown column 'parent_id=2' in 'where clause'"}
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:16:30.024	[31merror[0m	/Users/le/Documents/forGO/newbee-mall-api/core/server.go:38	accept tcp [::]:8888: use of closed network connection
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:17:56.101	[31merror[0m	/Users/le/Documents/forGO/newbee-mall-api/core/server.go:38	accept tcp [::]:8888: use of closed network connection

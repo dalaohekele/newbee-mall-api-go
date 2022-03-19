@@ -1,0 +1,30 @@
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 21:57:27.665	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:14	use middleware logger
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 21:57:27.665	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:17	use middleware cors
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 21:57:27.665	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:18	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 21:57:27.729	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:35	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 21:57:27.729	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/core/server.go:36	server run success on 	{"address": ":8888"}
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 21:58:24.918	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:14	use middleware logger
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 21:58:24.918	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:17	use middleware cors
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 21:58:24.918	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:18	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 21:58:25.007	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:35	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 21:58:25.007	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/core/server.go:36	server run success on 	{"address": ":8888"}
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:01:47.409	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:14	use middleware logger
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:01:47.409	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:17	use middleware cors
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:01:47.409	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:18	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:01:47.488	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:35	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:01:47.488	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/core/server.go:36	server run success on 	{"address": ":8888"}
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:11:27.390	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:14	use middleware logger
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:11:27.391	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:17	use middleware cors
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:11:27.391	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:18	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:11:27.500	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:35	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:11:27.501	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/core/server.go:36	server run success on 	{"address": ":8888"}
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:16:10.746	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:14	use middleware logger
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:16:10.746	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:17	use middleware cors
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:16:10.746	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:18	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:16:10.799	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:35	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:16:10.800	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/core/server.go:36	server run success on 	{"address": ":8888"}
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:16:32.048	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:14	use middleware logger
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:16:32.048	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:17	use middleware cors
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:16:32.048	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:18	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:16:32.159	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/initialize/router.go:35	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2022/03/19 - 22:16:32.160	[34minfo[0m	/Users/le/Documents/forGO/newbee-mall-api/core/server.go:36	server run success on 	{"address": ":8888"}
