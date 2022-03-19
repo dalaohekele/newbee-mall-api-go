@@ -1,4 +1,5 @@
 ## mall商城go版本
+本项目为[newbee-mall-api](https://github.com/newbee-ltd/newbee-mall-api) 的go版本
 
 项目框架参考链接: [gin-vue-admin](https://github.com/flipped-aurora/gin-vue-admin)
 
