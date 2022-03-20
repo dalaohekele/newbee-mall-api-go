@@ -109,7 +109,7 @@ func (g *GoodsCategoryApi) ListForSelect(c *gin.Context) {
 	if level == enum.LevelOne.Code() {
 		_, levelTwoList := goodsCategoryService.SelectByLevelAndParentIdsAndNumber(id, enum.LevelTwo.Code())
 		if levelTwoList != nil {
-			_, levelThreeList := goodsCategoryService.SelectByLevelAndParentIdsAndNumber(int(levelTwoList[0].ID), enum.LevelThree.Code())
+			_, levelThreeList := goodsCategoryService.SelectByLevelAndParentIdsAndNumber(int(levelTwoList[0].CategoryId), enum.LevelThree.Code())
 			categoryResult["secondLevelCategories"] = levelTwoList
 			categoryResult["thirdLevelCategories"] = levelThreeList
 		}

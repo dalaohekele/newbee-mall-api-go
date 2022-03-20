@@ -78,18 +78,18 @@ func (goodsCategoryService *GoodsCategoryService) SelectCategoryPage(info manage
 
 // SelectCategoryById 获取单个分类数据
 func (goodsCategoryService *GoodsCategoryService) SelectCategoryById(categoryId int) (err error, goodsCategory manage.MallGoodsCategory) {
-	err = global.GVA_DB.Where("id=?", categoryId).First(&goodsCategory).Error
+	err = global.GVA_DB.Where("category_id=?", categoryId).First(&goodsCategory).Error
 	return err, goodsCategory
 }
 
 // DeleteGoodsCategoriesByIds 批量设置失效
 func (goodsCategoryService *GoodsCategoryService) DeleteGoodsCategoriesByIds(ids request.IdsReq) (err error, goodsCategory manage.MallGoodsCategory) {
-	err = global.GVA_DB.Where("id in ?", ids.Ids).UpdateColumns(manage.MallGoodsCategory{IsDeleted: 1}).Error
+	err = global.GVA_DB.Where("category_id in ?", ids.Ids).UpdateColumns(manage.MallGoodsCategory{IsDeleted: 1}).Error
 	return err, goodsCategory
 }
 
 func (goodsCategoryService *GoodsCategoryService) SelectByLevelAndParentIdsAndNumber(parentId int, categoryLevel int) (err error, goodsCategories []manage.MallGoodsCategory) {
-	err = global.GVA_DB.Where("id in ?", parentId).Where("category_level=?", categoryLevel).Where("is_deleted=0").Error
+	err = global.GVA_DB.Where("category_id in ?", parentId).Where("category_level=?", categoryLevel).Where("is_deleted=0").Error
 	return err, goodsCategories
 
 }
