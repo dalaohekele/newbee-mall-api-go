@@ -16,9 +16,6 @@ import (
 type GoodsCategoryService struct {
 }
 
-// GoodsCategoryServiceApp 提供全局调用
-var GoodsCategoryServiceApp = new(GoodsCategoryService)
-
 // AddCategory 添加商品分类
 func (goodsCategoryService *GoodsCategoryService) AddCategory(req manageReq.MallGoodsCategoryReq) (err error) {
 	if !errors.Is(global.GVA_DB.Where("category_level=? AND category_name=? AND is_deleted=0",
@@ -39,30 +36,36 @@ func (goodsCategoryService *GoodsCategoryService) AddCategory(req manageReq.Mall
 }
 
 // UpdateCategory 更新商品分类
-func (goodsCategoryService *GoodsCategoryService) UpdateCategory(category manage.MallGoodsCategory) (err error) {
+func (goodsCategoryService *GoodsCategoryService) UpdateCategory(req manageReq.MallGoodsCategoryReq) (err error) {
 	if !errors.Is(global.GVA_DB.Where("category_level=? AND category_name=? AND is_deleted=0",
-		category.CategoryLevel, category.CategoryName).First(&manage.MallGoodsCategory{}).Error, gorm.ErrRecordNotFound) {
+		req.CategoryLevel, req.CategoryName).First(&manage.MallGoodsCategory{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("存在相同分类")
 	}
-	return global.GVA_DB.Updates(&category).Error
+	rank, _ := strconv.Atoi(req.CategoryRank)
+	category := manage.MallGoodsCategory{
+		CategoryName: req.CategoryName,
+		CategoryRank: rank,
+		UpdateTime:   common.JSONTime{Time: time.Now()},
+	}
+	return global.GVA_DB.Where("category_id =?", req.CategoryId).Updates(&category).Error
 
 }
 
 // SelectCategoryPage 获取分类分页数据
-func (goodsCategoryService *GoodsCategoryService) SelectCategoryPage(info manageReq.SearchCategoryParams) (err error, list interface{}, total int64) {
-	limit := info.PageSize
+func (goodsCategoryService *GoodsCategoryService) SelectCategoryPage(req manageReq.SearchCategoryParams) (err error, list interface{}, total int64) {
+	limit := req.PageSize
 	if limit > 1000 {
 		limit = 1000
 	}
-	offset := info.PageSize * (info.PageNumber - 1)
+	offset := req.PageSize * (req.PageNumber - 1)
 	db := global.GVA_DB.Model(&manage.MallGoodsCategory{})
 	var categoryList []manage.MallGoodsCategory
 
-	if utils.NumsInList(info.CategoryLevel, []int{1, 2, 3}) {
-		db.Where("category_level=?", info.CategoryLevel)
+	if utils.NumsInList(req.CategoryLevel, []int{1, 2, 3}) {
+		db.Where("category_level=?", req.CategoryLevel)
 	}
-	if info.ParentId >= 0 {
-		db.Where("parent_id=?", info.ParentId)
+	if req.ParentId >= 0 {
+		db.Where("parent_id=?", req.ParentId)
 	}
 	err = db.Where("is_deleted=0").Count(&total).Error
 

@@ -7,7 +7,6 @@ import (
 	"main.go/model/common/enum"
 	"main.go/model/common/request"
 	"main.go/model/common/response"
-	"main.go/model/manage"
 	manageReq "main.go/model/manage/request"
 	manageRes "main.go/model/manage/response"
 	"main.go/utils"
@@ -35,7 +34,7 @@ func (g *GoodsCategoryApi) CreateCategory(c *gin.Context) {
 
 // UpdateCategory 修改商品分类信息
 func (g *GoodsCategoryApi) UpdateCategory(c *gin.Context) {
-	var category manage.MallGoodsCategory
+	var category manageReq.MallGoodsCategoryReq
 	_ = c.ShouldBindJSON(&category)
 	if err := utils.Verify(category, utils.GoodsCategoryVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
@@ -51,18 +50,18 @@ func (g *GoodsCategoryApi) UpdateCategory(c *gin.Context) {
 
 // GetCategoryList 获取商品分类
 func (g *GoodsCategoryApi) GetCategoryList(c *gin.Context) {
-	var pageInfo manageReq.SearchCategoryParams
-	_ = c.ShouldBindQuery(&pageInfo)
-	if err, list, total := goodsCategoryService.SelectCategoryPage(pageInfo); err != nil {
+	var req manageReq.SearchCategoryParams
+	_ = c.ShouldBindQuery(&req)
+	if err, list, total := goodsCategoryService.SelectCategoryPage(req); err != nil {
 		global.GVA_LOG.Error("获取失败！", zap.Error(err))
 		response.FailWithMessage("获取失败！", c)
 	} else {
 		response.OkWithData(response.PageResult{
 			List:       list,
 			TotalCount: total,
-			CurrPage:   pageInfo.PageNumber,
-			PageSize:   pageInfo.PageSize,
-			TotalPage:  int(total) / pageInfo.PageSize,
+			CurrPage:   req.PageNumber,
+			PageSize:   req.PageSize,
+			TotalPage:  int(total) / req.PageSize,
 		}, c)
 	}
 }

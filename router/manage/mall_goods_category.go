@@ -17,7 +17,7 @@ func (s *GoodsCategoryRouter) InitMallGoodsCategoryRouter(Router *gin.RouterGrou
 		goodsCategoryRouter.POST("categories", goodsCategoryApi.CreateCategory)
 		goodsCategoryRouter.PUT("categories", goodsCategoryApi.UpdateCategory)
 		goodsCategoryRouter.GET("categories", goodsCategoryApi.GetCategoryList)
-		goodsCategoryRouter.GET("get/:id", goodsCategoryApi.GetCategory)
+		goodsCategoryRouter.GET("categories/:id", goodsCategoryApi.GetCategory)
 		goodsCategoryRouter.DELETE("categories", goodsCategoryApi.DelCategory)
 		goodsCategoryRouter.GET("categories4Select", goodsCategoryApi.ListForSelect)
 	}
