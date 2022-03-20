@@ -6,6 +6,7 @@ import (
 	"main.go/global"
 	"main.go/model/common/request"
 	"main.go/model/common/response"
+	"main.go/model/example"
 	"main.go/model/manage"
 	manageReq "main.go/model/manage/request"
 	"main.go/utils"
@@ -133,4 +134,24 @@ func (mallAdminUserApi *MallAdminUserApi) LockUser(c *gin.Context) {
 	} else {
 		response.OkWithMessage("更新成功", c)
 	}
+}
+
+// UploadFile 上传单图
+// 此处上传图片的功能可用，但是任然使用原前端项目的接口
+func (mallAdminUserApi *MallAdminUserApi) UploadFile(c *gin.Context) {
+	var file example.ExaFileUploadAndDownload
+	noSave := c.DefaultQuery("noSave", "0")
+	_, header, err := c.Request.FormFile("file")
+	if err != nil {
+		global.GVA_LOG.Error("接收文件失败!", zap.Error(err))
+		response.FailWithMessage("接收文件失败", c)
+		return
+	}
+	err, file = fileUploadAndDownloadService.UploadFile(header, noSave) // 文件上传后拿到文件路径
+	if err != nil {
+		global.GVA_LOG.Error("修改数据库链接失败!", zap.Error(err))
+		response.FailWithMessage("修改数据库链接失败", c)
+		return
+	}
+	response.OkWithData(file.Url, c)
 }

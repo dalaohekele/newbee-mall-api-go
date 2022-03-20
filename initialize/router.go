@@ -3,6 +3,7 @@ package initialize
 import (
 	"github.com/gin-gonic/gin"
 	"main.go/global"
+	"main.go/middleware"
 	"main.go/router"
 	"net/http"
 )
@@ -13,7 +14,7 @@ func Routers() *gin.Engine {
 	// Router.Use(middleware.LoadTls())  // 打开就能玩https了
 	global.GVA_LOG.Info("use middleware logger")
 	// 跨域
-	//Router.Use(middleware.Cors()) // 如需跨域可以打开
+	Router.Use(middleware.Cors()) // 如需跨域可以打开
 	global.GVA_LOG.Info("use middleware cors")
 	global.GVA_LOG.Info("register swagger handler")
 	// 方便统一添加路由组前缀 多服务器上线使用
@@ -21,6 +22,7 @@ func Routers() *gin.Engine {
 	manageRouter := router.RouterGroupApp.Manage
 	ManageGroup := Router.Group("manage-api")
 	PublicGroup := Router.Group("")
+
 	{
 		// 健康监测
 		PublicGroup.GET("/health", func(c *gin.Context) {

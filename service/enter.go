@@ -1,9 +1,13 @@
 package service
 
-import "main.go/service/manage"
+import (
+	"main.go/service/example"
+	"main.go/service/manage"
+)
 
 type ServiceGroup struct {
-	ManageServiceGroup manage.ManageServiceGroup
+	ExampleServiceGroup example.ServiceGroup
+	ManageServiceGroup  manage.ManageServiceGroup
 }
 
 var ServiceGroupApp = new(ServiceGroup)

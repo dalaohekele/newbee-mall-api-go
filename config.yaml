@@ -1,4 +1,4 @@
-## 本地图片上传路径
+## 本地图片上传路径，但是在本项目没有使用上传功能，上传使用的是原项目的服务器
 local:
   path: /Users/le/Documents/image/mall
 mysql:
