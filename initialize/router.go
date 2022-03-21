@@ -16,7 +16,6 @@ func Routers() *gin.Engine {
 	// 跨域
 	Router.Use(middleware.Cors()) // 如需跨域可以打开
 	global.GVA_LOG.Info("use middleware cors")
-	global.GVA_LOG.Info("register swagger handler")
 	// 方便统一添加路由组前缀 多服务器上线使用
 	//商城后管路由
 	manageRouter := router.RouterGroupApp.Manage

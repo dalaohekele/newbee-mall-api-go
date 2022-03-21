@@ -137,7 +137,7 @@ func (mallAdminUserApi *MallAdminUserApi) LockUser(c *gin.Context) {
 }
 
 // UploadFile 上传单图
-// 此处上传图片的功能可用，但是任然使用原前端项目的接口
+// 此处上传图片的功能可用，但是任然使用原前端项目的接口指向的地址是
 func (mallAdminUserApi *MallAdminUserApi) UploadFile(c *gin.Context) {
 	var file example.ExaFileUploadAndDownload
 	noSave := c.DefaultQuery("noSave", "0")
@@ -153,5 +153,6 @@ func (mallAdminUserApi *MallAdminUserApi) UploadFile(c *gin.Context) {
 		response.FailWithMessage("修改数据库链接失败", c)
 		return
 	}
-	response.OkWithData(file.Url, c)
+	//这里直接使用本地的url
+	response.OkWithData("http://localhost:8888/"+file.Url, c)
 }
