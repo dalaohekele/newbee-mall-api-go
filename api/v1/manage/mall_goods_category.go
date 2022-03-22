@@ -13,11 +13,11 @@ import (
 	"strconv"
 )
 
-type GoodsCategoryApi struct {
+type MallGoodsCategoryApi struct {
 }
 
 // CreateCategory 新建商品分类
-func (g *GoodsCategoryApi) CreateCategory(c *gin.Context) {
+func (g *MallGoodsCategoryApi) CreateCategory(c *gin.Context) {
 	var category manageReq.MallGoodsCategoryReq
 	_ = c.ShouldBindJSON(&category)
 	if err := utils.Verify(category, utils.GoodsCategoryVerify); err != nil {
@@ -33,7 +33,7 @@ func (g *GoodsCategoryApi) CreateCategory(c *gin.Context) {
 }
 
 // UpdateCategory 修改商品分类信息
-func (g *GoodsCategoryApi) UpdateCategory(c *gin.Context) {
+func (g *MallGoodsCategoryApi) UpdateCategory(c *gin.Context) {
 	var category manageReq.MallGoodsCategoryReq
 	_ = c.ShouldBindJSON(&category)
 	if err := utils.Verify(category, utils.GoodsCategoryVerify); err != nil {
@@ -49,7 +49,7 @@ func (g *GoodsCategoryApi) UpdateCategory(c *gin.Context) {
 }
 
 // GetCategoryList 获取商品分类
-func (g *GoodsCategoryApi) GetCategoryList(c *gin.Context) {
+func (g *MallGoodsCategoryApi) GetCategoryList(c *gin.Context) {
 	var req manageReq.SearchCategoryParams
 	_ = c.ShouldBindQuery(&req)
 	if err, list, total := goodsCategoryService.SelectCategoryPage(req); err != nil {
@@ -67,7 +67,7 @@ func (g *GoodsCategoryApi) GetCategoryList(c *gin.Context) {
 }
 
 // GetCategory 通过id获取分类数据
-func (g *GoodsCategoryApi) GetCategory(c *gin.Context) {
+func (g *MallGoodsCategoryApi) GetCategory(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	err, goodsCategory := goodsCategoryService.SelectCategoryById(id)
 	if err != nil {
@@ -79,7 +79,7 @@ func (g *GoodsCategoryApi) GetCategory(c *gin.Context) {
 }
 
 // DelCategory 设置分类失效
-func (g *GoodsCategoryApi) DelCategory(c *gin.Context) {
+func (g *MallGoodsCategoryApi) DelCategory(c *gin.Context) {
 	var ids request.IdsReq
 	_ = c.ShouldBindJSON(&ids)
 	if err, _ := goodsCategoryService.DeleteGoodsCategoriesByIds(ids); err != nil {
@@ -92,7 +92,7 @@ func (g *GoodsCategoryApi) DelCategory(c *gin.Context) {
 }
 
 // ListForSelect 用于三级分类联动效果制作
-func (g *GoodsCategoryApi) ListForSelect(c *gin.Context) {
+func (g *MallGoodsCategoryApi) ListForSelect(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	err, goodsCategory := goodsCategoryService.SelectCategoryById(id)
 	if err != nil {

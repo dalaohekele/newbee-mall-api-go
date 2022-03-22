@@ -32,6 +32,7 @@ func Routers() *gin.Engine {
 		//商城后管路由初始化
 		manageRouter.InitMallAdminUserRouter(ManageGroup)
 		manageRouter.InitMallGoodsCategoryRouter(ManageGroup)
+		manageRouter.InitMallGoodsInfoRouter(ManageGroup)
 	}
 	global.GVA_LOG.Info("router register success")
 	return Router

@@ -12,7 +12,7 @@ type GoodsCategoryRouter struct {
 func (s *GoodsCategoryRouter) InitMallGoodsCategoryRouter(Router *gin.RouterGroup) {
 	goodsCategoryRouter := Router.Group("v1").Use(middleware.AdminJWTAuth())
 
-	var goodsCategoryApi = v1.ApiGroupApp.ManageApiGroup.GoodsCategoryApi
+	var goodsCategoryApi = v1.ApiGroupApp.ManageApiGroup.MallGoodsCategoryApi
 	{
 		goodsCategoryRouter.POST("categories", goodsCategoryApi.CreateCategory)
 		goodsCategoryRouter.PUT("categories", goodsCategoryApi.UpdateCategory)
