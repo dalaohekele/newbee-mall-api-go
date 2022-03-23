@@ -78,11 +78,11 @@ func (mallGoodsInfoApi *MallGoodsInfoApi) FindMallGoodsInfo(c *gin.Context) {
 	}
 	goodsInfoRes := make(map[string]interface{})
 	goodsInfoRes["goods"] = goodsInfo
-	if _, thirdCategory := goodsCategoryService.SelectCategoryById(goodsInfo.GoodsCategoryId); thirdCategory != (manage.MallGoodsCategory{}) {
+	if _, thirdCategory := mallGoodsCategoryService.SelectCategoryById(goodsInfo.GoodsCategoryId); thirdCategory != (manage.MallGoodsCategory{}) {
 		goodsInfoRes["thirdCategory"] = thirdCategory
-		if _, secondCategory := goodsCategoryService.SelectCategoryById(thirdCategory.ParentId); secondCategory != (manage.MallGoodsCategory{}) {
+		if _, secondCategory := mallGoodsCategoryService.SelectCategoryById(thirdCategory.ParentId); secondCategory != (manage.MallGoodsCategory{}) {
 			goodsInfoRes["secondCategory"] = secondCategory
-			if _, firstCategory := goodsCategoryService.SelectCategoryById(secondCategory.ParentId); firstCategory != (manage.MallGoodsCategory{}) {
+			if _, firstCategory := mallGoodsCategoryService.SelectCategoryById(secondCategory.ParentId); firstCategory != (manage.MallGoodsCategory{}) {
 				goodsInfoRes["firstCategory"] = firstCategory
 			}
 		}

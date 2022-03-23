@@ -4,6 +4,7 @@ type ManageServiceGroup struct {
 	MallAdminUserService
 	MallAdminUserTokenService
 	MallUserService
-	GoodsCategoryService
+	MallGoodsCategoryService
 	MallGoodsInfoService
+	MallCarouselService
 }

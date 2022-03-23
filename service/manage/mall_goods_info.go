@@ -17,7 +17,7 @@ type MallGoodsInfoService struct {
 }
 
 // CreateMallGoodsInfo 创建MallGoodsInfo
-func (mallGoodsInfoService *MallGoodsInfoService) CreateMallGoodsInfo(mallGoodsInfo manage.MallGoodsInfo) (err error) {
+func (m *MallGoodsInfoService) CreateMallGoodsInfo(mallGoodsInfo manage.MallGoodsInfo) (err error) {
 	var goodsCategory manage.MallGoodsCategory
 
 	if !errors.Is(global.GVA_DB.Where("category_id=? AND deleted_status=0", goodsCategory.CategoryId).First(&goodsCategory).Error, gorm.ErrRecordNotFound) &&
@@ -32,20 +32,20 @@ func (mallGoodsInfoService *MallGoodsInfoService) CreateMallGoodsInfo(mallGoodsI
 }
 
 // DeleteMallGoodsInfo 删除MallGoodsInfo记录
-func (mallGoodsInfoService *MallGoodsInfoService) DeleteMallGoodsInfo(mallGoodsInfo manage.MallGoodsInfo) (err error) {
+func (m *MallGoodsInfoService) DeleteMallGoodsInfo(mallGoodsInfo manage.MallGoodsInfo) (err error) {
 	err = global.GVA_DB.Delete(&mallGoodsInfo).Error
 	return err
 }
 
 // ChangeMallGoodsInfoByIds 上下架
-func (mallGoodsInfoService *MallGoodsInfoService) ChangeMallGoodsInfoByIds(ids request.IdsReq, sellStatus string) (err error) {
+func (m *MallGoodsInfoService) ChangeMallGoodsInfoByIds(ids request.IdsReq, sellStatus string) (err error) {
 	intSellStatus, _ := strconv.Atoi(sellStatus)
 	err = global.GVA_DB.Model(&manage.MallGoodsInfo{}).Where("goods_id in ?", ids.Ids).Update("goods_sell_status", intSellStatus).Error
 	return err
 }
 
 // UpdateMallGoodsInfo 更新MallGoodsInfo记录
-func (mallGoodsInfoService *MallGoodsInfoService) UpdateMallGoodsInfo(req manageReq.GoodsInfoUpdateParam) (err error) {
+func (m *MallGoodsInfoService) UpdateMallGoodsInfo(req manageReq.GoodsInfoUpdateParam) (err error) {
 	goodsId, _ := strconv.Atoi(req.GoodsId)
 	originalPrice, _ := strconv.Atoi(req.OriginalPrice)
 	stockNum, _ := strconv.Atoi(req.StockNum)
@@ -68,13 +68,13 @@ func (mallGoodsInfoService *MallGoodsInfoService) UpdateMallGoodsInfo(req manage
 }
 
 // GetMallGoodsInfo 根据id获取MallGoodsInfo记录
-func (mallGoodsInfoService *MallGoodsInfoService) GetMallGoodsInfo(id int) (err error, mallGoodsInfo manage.MallGoodsInfo) {
+func (m *MallGoodsInfoService) GetMallGoodsInfo(id int) (err error, mallGoodsInfo manage.MallGoodsInfo) {
 	err = global.GVA_DB.Where("goods_id = ?", id).First(&mallGoodsInfo).Error
 	return
 }
 
 // GetMallGoodsInfoInfoList 分页获取MallGoodsInfo记录
-func (mallGoodsInfoService *MallGoodsInfoService) GetMallGoodsInfoInfoList(info manageReq.MallGoodsInfoSearch, goodsName string, goodsSellStatus string) (err error, list interface{}, total int64) {
+func (m *MallGoodsInfoService) GetMallGoodsInfoInfoList(info manageReq.MallGoodsInfoSearch, goodsName string, goodsSellStatus string) (err error, list interface{}, total int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.PageNumber - 1)
 	// 创建db

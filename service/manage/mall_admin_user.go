@@ -16,7 +16,7 @@ type MallAdminUserService struct {
 }
 
 // CreateMallAdminUser 创建MallAdminUser记录
-func (mallAdminUserService *MallAdminUserService) CreateMallAdminUser(mallAdminUser manage.MallAdminUser) (err error) {
+func (m *MallAdminUserService) CreateMallAdminUser(mallAdminUser manage.MallAdminUser) (err error) {
 	if !errors.Is(global.GVA_DB.Where("login_user_name = ?", mallAdminUser.LoginUserName).First(&manage.MallAdminUser{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("存在相同用户名")
 	}
@@ -25,7 +25,7 @@ func (mallAdminUserService *MallAdminUserService) CreateMallAdminUser(mallAdminU
 }
 
 // UpdateMallAdminUser 更新MallAdminUser记录
-func (mallAdminUserService *MallAdminUserService) UpdateMallAdminUser(mallAdminUser manage.MallAdminUser) (err error) {
+func (m *MallAdminUserService) UpdateMallAdminUser(mallAdminUser manage.MallAdminUser) (err error) {
 	if !errors.Is(global.GVA_DB.Where("login_user_name = ?", mallAdminUser.LoginUserName).First(&manage.MallAdminUser{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("存在相同用户名")
 	}
@@ -34,7 +34,7 @@ func (mallAdminUserService *MallAdminUserService) UpdateMallAdminUser(mallAdminU
 }
 
 // GetMallAdminUser 根据id获取MallAdminUser记录
-func (mallAdminUserService *MallAdminUserService) GetMallAdminUser(token string) (err error, mallAdminUser manage.MallAdminUser) {
+func (m *MallAdminUserService) GetMallAdminUser(token string) (err error, mallAdminUser manage.MallAdminUser) {
 	var adminToken manage.MallAdminUserToken
 	if errors.Is(global.GVA_DB.Where("token =?", token).First(&adminToken).Error, gorm.ErrRecordNotFound) {
 		return errors.New("不存在的用户"), mallAdminUser
@@ -44,7 +44,7 @@ func (mallAdminUserService *MallAdminUserService) GetMallAdminUser(token string)
 }
 
 // AdminLogin 管理员登陆
-func (mallAdminUserService *MallAdminUserService) AdminLogin(params manageReq.MallAdminLoginParam) (err error, mallAdminUser manage.MallAdminUser, adminToken manage.MallAdminUserToken) {
+func (m *MallAdminUserService) AdminLogin(params manageReq.MallAdminLoginParam) (err error, mallAdminUser manage.MallAdminUser, adminToken manage.MallAdminUserToken) {
 	err = global.GVA_DB.Where("login_user_name=? AND login_password=?", params.UserName, params.PasswordMd5).First(&mallAdminUser).Error
 	if mallAdminUser != (manage.MallAdminUser{}) {
 		token := getNewToken(time.Now().UnixNano()/1e6, int(mallAdminUser.AdminUserId))

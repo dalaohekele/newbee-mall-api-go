@@ -24,7 +24,7 @@ func (g *MallGoodsCategoryApi) CreateCategory(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err := goodsCategoryService.AddCategory(category); err != nil {
+	if err := mallGoodsCategoryService.AddCategory(category); err != nil {
 		global.GVA_LOG.Error("创建失败", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 	} else {
@@ -40,7 +40,7 @@ func (g *MallGoodsCategoryApi) UpdateCategory(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err := goodsCategoryService.UpdateCategory(category); err != nil {
+	if err := mallGoodsCategoryService.UpdateCategory(category); err != nil {
 		global.GVA_LOG.Error("更新失败", zap.Error(err))
 		response.FailWithMessage("更新失败，存在相同分类", c)
 	} else {
@@ -52,7 +52,7 @@ func (g *MallGoodsCategoryApi) UpdateCategory(c *gin.Context) {
 func (g *MallGoodsCategoryApi) GetCategoryList(c *gin.Context) {
 	var req manageReq.SearchCategoryParams
 	_ = c.ShouldBindQuery(&req)
-	if err, list, total := goodsCategoryService.SelectCategoryPage(req); err != nil {
+	if err, list, total := mallGoodsCategoryService.SelectCategoryPage(req); err != nil {
 		global.GVA_LOG.Error("获取失败！", zap.Error(err))
 		response.FailWithMessage("获取失败！", c)
 	} else {
@@ -69,7 +69,7 @@ func (g *MallGoodsCategoryApi) GetCategoryList(c *gin.Context) {
 // GetCategory 通过id获取分类数据
 func (g *MallGoodsCategoryApi) GetCategory(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	err, goodsCategory := goodsCategoryService.SelectCategoryById(id)
+	err, goodsCategory := mallGoodsCategoryService.SelectCategoryById(id)
 	if err != nil {
 		global.GVA_LOG.Error("获取失败！", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -82,7 +82,7 @@ func (g *MallGoodsCategoryApi) GetCategory(c *gin.Context) {
 func (g *MallGoodsCategoryApi) DelCategory(c *gin.Context) {
 	var ids request.IdsReq
 	_ = c.ShouldBindJSON(&ids)
-	if err, _ := goodsCategoryService.DeleteGoodsCategoriesByIds(ids); err != nil {
+	if err, _ := mallGoodsCategoryService.DeleteGoodsCategoriesByIds(ids); err != nil {
 		global.GVA_LOG.Error("删除失败！", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
@@ -94,7 +94,7 @@ func (g *MallGoodsCategoryApi) DelCategory(c *gin.Context) {
 // ListForSelect 用于三级分类联动效果制作
 func (g *MallGoodsCategoryApi) ListForSelect(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	err, goodsCategory := goodsCategoryService.SelectCategoryById(id)
+	err, goodsCategory := mallGoodsCategoryService.SelectCategoryById(id)
 	if err != nil {
 		global.GVA_LOG.Error("获取失败！", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -106,15 +106,15 @@ func (g *MallGoodsCategoryApi) ListForSelect(c *gin.Context) {
 	}
 	categoryResult := make(map[string]interface{})
 	if level == enum.LevelOne.Code() {
-		_, levelTwoList := goodsCategoryService.SelectByLevelAndParentIdsAndNumber(id, enum.LevelTwo.Code())
+		_, levelTwoList := mallGoodsCategoryService.SelectByLevelAndParentIdsAndNumber(id, enum.LevelTwo.Code())
 		if levelTwoList != nil {
-			_, levelThreeList := goodsCategoryService.SelectByLevelAndParentIdsAndNumber(int(levelTwoList[0].CategoryId), enum.LevelThree.Code())
+			_, levelThreeList := mallGoodsCategoryService.SelectByLevelAndParentIdsAndNumber(int(levelTwoList[0].CategoryId), enum.LevelThree.Code())
 			categoryResult["secondLevelCategories"] = levelTwoList
 			categoryResult["thirdLevelCategories"] = levelThreeList
 		}
 	}
 	if level == enum.LevelTwo.Code() {
-		_, levelThreeList := goodsCategoryService.SelectByLevelAndParentIdsAndNumber(id, enum.LevelThree.Code())
+		_, levelThreeList := mallGoodsCategoryService.SelectByLevelAndParentIdsAndNumber(id, enum.LevelThree.Code())
 		categoryResult["thirdLevelCategories"] = levelThreeList
 	}
 	response.OkWithData(categoryResult, c)

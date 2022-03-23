@@ -17,7 +17,7 @@ type MallAdminUserApi struct {
 }
 
 // CreateMallAdminUser 创建MallAdminUser
-func (mallAdminUserApi *MallAdminUserApi) CreateMallAdminUser(c *gin.Context) {
+func (m *MallAdminUserApi) CreateMallAdminUser(c *gin.Context) {
 	var params manageReq.MallAdminParam
 	_ = c.ShouldBindJSON(&params)
 	if err := utils.Verify(params, utils.AdminUserRegisterVerify); err != nil {
@@ -38,7 +38,7 @@ func (mallAdminUserApi *MallAdminUserApi) CreateMallAdminUser(c *gin.Context) {
 }
 
 // UpdateMallAdminUserPassword 修改密码
-func (mallAdminUserApi *MallAdminUserApi) UpdateMallAdminUserPassword(c *gin.Context) {
+func (m *MallAdminUserApi) UpdateMallAdminUserPassword(c *gin.Context) {
 	var params manage.MallAdminUser
 	_ = c.ShouldBindJSON(&params)
 	if err := utils.Verify(params, utils.AdminUserChangePasswordVerify); err != nil {
@@ -58,7 +58,7 @@ func (mallAdminUserApi *MallAdminUserApi) UpdateMallAdminUserPassword(c *gin.Con
 }
 
 // UpdateMallAdminUserName 更新MallAdminUser用户名
-func (mallAdminUserApi *MallAdminUserApi) UpdateMallAdminUserName(c *gin.Context) {
+func (m *MallAdminUserApi) UpdateMallAdminUserName(c *gin.Context) {
 	var mallAdminUser manage.MallAdminUser
 	_ = c.ShouldBindJSON(&mallAdminUser)
 	if err := mallAdminUserService.UpdateMallAdminUser(mallAdminUser); err != nil {
@@ -70,7 +70,7 @@ func (mallAdminUserApi *MallAdminUserApi) UpdateMallAdminUserName(c *gin.Context
 }
 
 // AdminUserProfile 用id查询AdminUser
-func (mallAdminUserApi *MallAdminUserApi) AdminUserProfile(c *gin.Context) {
+func (m *MallAdminUserApi) AdminUserProfile(c *gin.Context) {
 	adminToken := c.GetHeader("token")
 	if err, mallAdminUser := mallAdminUserService.GetMallAdminUser(adminToken); err != nil {
 		global.GVA_LOG.Error("未查询到记录", zap.Error(err))
@@ -82,7 +82,7 @@ func (mallAdminUserApi *MallAdminUserApi) AdminUserProfile(c *gin.Context) {
 }
 
 // AdminLogin 管理员登陆
-func (mallAdminUserApi *MallAdminUserApi) AdminLogin(c *gin.Context) {
+func (m *MallAdminUserApi) AdminLogin(c *gin.Context) {
 	var adminLoginParams manageReq.MallAdminLoginParam
 	_ = c.ShouldBindJSON(&adminLoginParams)
 	if err, _, adminToken := mallAdminUserService.AdminLogin(adminLoginParams); err != nil {
@@ -93,7 +93,7 @@ func (mallAdminUserApi *MallAdminUserApi) AdminLogin(c *gin.Context) {
 }
 
 // AdminLogout 登出
-func (mallAdminUserApi *MallAdminUserApi) AdminLogout(c *gin.Context) {
+func (m *MallAdminUserApi) AdminLogout(c *gin.Context) {
 	var adminUser manage.MallAdminUser
 	_ = c.ShouldBindJSON(adminUser)
 	var ids request.IdsReq
@@ -107,7 +107,7 @@ func (mallAdminUserApi *MallAdminUserApi) AdminLogout(c *gin.Context) {
 }
 
 // UserList 商城注册用户列表
-func (mallAdminUserApi *MallAdminUserApi) UserList(c *gin.Context) {
+func (m *MallAdminUserApi) UserList(c *gin.Context) {
 	var pageInfo manageReq.MallUserSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := mallUserService.GetMallUserInfoList(pageInfo); err != nil {
@@ -124,7 +124,7 @@ func (mallAdminUserApi *MallAdminUserApi) UserList(c *gin.Context) {
 }
 
 // LockUser 用户禁用与解除禁用(0-未锁定 1-已锁定)
-func (mallAdminUserApi *MallAdminUserApi) LockUser(c *gin.Context) {
+func (m *MallAdminUserApi) LockUser(c *gin.Context) {
 	lockStatus, _ := strconv.Atoi(c.Param("lockStatus"))
 	var IDS request.IdsReq
 	_ = c.ShouldBindJSON(&IDS)
@@ -138,7 +138,7 @@ func (mallAdminUserApi *MallAdminUserApi) LockUser(c *gin.Context) {
 
 // UploadFile 上传单图
 // 此处上传图片的功能可用，但是任然使用原前端项目的接口指向的地址是
-func (mallAdminUserApi *MallAdminUserApi) UploadFile(c *gin.Context) {
+func (m *MallAdminUserApi) UploadFile(c *gin.Context) {
 	var file example.ExaFileUploadAndDownload
 	noSave := c.DefaultQuery("noSave", "0")
 	_, header, err := c.Request.FormFile("file")
