@@ -8,7 +8,6 @@ import (
 	"main.go/model/common/response"
 	"main.go/model/manage"
 	manageReq "main.go/model/manage/request"
-	"main.go/utils"
 	"strconv"
 )
 
@@ -19,10 +18,6 @@ type MallGoodsInfoApi struct {
 func (mallGoodsInfoApi *MallGoodsInfoApi) CreateMallGoodsInfo(c *gin.Context) {
 	var mallGoodsInfo manageReq.GoodsInfoAddParam
 	_ = c.ShouldBindJSON(&mallGoodsInfo)
-	if err := utils.Verify(mallGoodsInfo, utils.GoodsAddParamVerify); err != nil {
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
 	if err := mallGoodsInfoService.CreateMallGoodsInfo(mallGoodsInfo); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败!"+err.Error(), c)
@@ -37,7 +32,7 @@ func (mallGoodsInfoApi *MallGoodsInfoApi) DeleteMallGoodsInfo(c *gin.Context) {
 	_ = c.ShouldBindJSON(&mallGoodsInfo)
 	if err := mallGoodsInfoService.DeleteMallGoodsInfo(mallGoodsInfo); err != nil {
 		global.GVA_LOG.Error("删除失败!", zap.Error(err))
-		response.FailWithMessage("删除失败", c)
+		response.FailWithMessage("删除失败"+err.Error(), c)
 	} else {
 		response.OkWithMessage("删除成功", c)
 	}
@@ -50,7 +45,7 @@ func (mallGoodsInfoApi *MallGoodsInfoApi) ChangeMallGoodsInfoByIds(c *gin.Contex
 	sellStatus := c.Param("status")
 	if err := mallGoodsInfoService.ChangeMallGoodsInfoByIds(IDS, sellStatus); err != nil {
 		global.GVA_LOG.Error("修改商品状态失败!", zap.Error(err))
-		response.FailWithMessage("修改商品状态失败", c)
+		response.FailWithMessage("修改商品状态失败"+err.Error(), c)
 	} else {
 		response.OkWithMessage("修改商品状态成功", c)
 	}
@@ -62,7 +57,7 @@ func (mallGoodsInfoApi *MallGoodsInfoApi) UpdateMallGoodsInfo(c *gin.Context) {
 	_ = c.ShouldBindJSON(&mallGoodsInfo)
 	if err := mallGoodsInfoService.UpdateMallGoodsInfo(mallGoodsInfo); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
+		response.FailWithMessage("更新失败"+err.Error(), c)
 	} else {
 		response.OkWithMessage("更新成功", c)
 	}
@@ -74,7 +69,7 @@ func (mallGoodsInfoApi *MallGoodsInfoApi) FindMallGoodsInfo(c *gin.Context) {
 	err, goodsInfo := mallGoodsInfoService.GetMallGoodsInfo(id)
 	if err != nil {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))
-		response.FailWithMessage("查询失败", c)
+		response.FailWithMessage("查询失败"+err.Error(), c)
 	}
 	goodsInfoRes := make(map[string]interface{})
 	goodsInfoRes["goods"] = goodsInfo
@@ -99,7 +94,7 @@ func (mallGoodsInfoApi *MallGoodsInfoApi) GetMallGoodsInfoList(c *gin.Context) {
 	goodsSellStatus := c.Query("goodsSellStatus")
 	if err, list, total := mallGoodsInfoService.GetMallGoodsInfoInfoList(pageInfo, goodsName, goodsSellStatus); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
-		response.FailWithMessage("获取失败", c)
+		response.FailWithMessage("获取失败"+err.Error(), c)
 	} else {
 		response.OkWithDetailed(response.PageResult{
 			List:       list,

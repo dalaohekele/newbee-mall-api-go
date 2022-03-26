@@ -9,6 +9,7 @@ import (
 	"main.go/model/common/request"
 	"main.go/model/manage"
 	manageReq "main.go/model/manage/request"
+	"main.go/utils"
 	"strconv"
 	"time"
 )
@@ -43,6 +44,9 @@ func (m *MallGoodsInfoService) CreateMallGoodsInfo(req manageReq.GoodsInfoAddPar
 		GoodsSellStatus:    goodsSellStatus,
 		CreateTime:         common.JSONTime{Time: time.Now()},
 		UpdateTime:         common.JSONTime{Time: time.Now()},
+	}
+	if err = utils.Verify(goodsInfo, utils.GoodsAddParamVerify); err != nil {
+		return errors.New(err.Error())
 	}
 	err = global.GVA_DB.Create(&goodsInfo).Error
 	return err
@@ -79,6 +83,9 @@ func (m *MallGoodsInfoService) UpdateMallGoodsInfo(req manageReq.GoodsInfoUpdate
 		Tag:                req.Tag,
 		GoodsSellStatus:    req.GoodsSellStatus,
 		UpdateTime:         common.JSONTime{Time: time.Now()},
+	}
+	if err = utils.Verify(goodsInfo, utils.GoodsAddParamVerify); err != nil {
+		return errors.New(err.Error())
 	}
 	err = global.GVA_DB.Where("goods_id=?", goodsInfo.GoodsId).Updates(&goodsInfo).Error
 	return err

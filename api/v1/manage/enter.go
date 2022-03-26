@@ -7,6 +7,7 @@ type ManageGroup struct {
 	MallGoodsCategoryApi
 	MallGoodsInfoApi
 	MallCarouselApi
+	MallIndexConfigApi
 }
 
 var mallAdminUserService = service.ServiceGroupApp.ManageServiceGroup.MallAdminUserService
@@ -16,3 +17,4 @@ var mallGoodsCategoryService = service.ServiceGroupApp.ManageServiceGroup.MallGo
 var fileUploadAndDownloadService = service.ServiceGroupApp.ExampleServiceGroup.FileUploadAndDownloadService
 var mallGoodsInfoService = service.ServiceGroupApp.ManageServiceGroup.MallGoodsInfoService
 var mallCarouselService = service.ServiceGroupApp.ManageServiceGroup.MallCarouselService
+var mallIndexConfigService = service.ServiceGroupApp.ManageServiceGroup.MallIndexConfigService

@@ -8,6 +8,7 @@ import (
 	"main.go/model/common/request"
 	"main.go/model/manage"
 	manageReq "main.go/model/manage/request"
+	"main.go/utils"
 	"strconv"
 	"time"
 )
@@ -15,7 +16,7 @@ import (
 type MallCarouselService struct {
 }
 
-// CreateMallCarousel 创建MallCarousel记录
+// CreateMallCarousel 创建MallCarousel
 func (m *MallCarouselService) CreateMallCarousel(req manageReq.MallCarouselAddParam) (err error) {
 	carouseRank, _ := strconv.Atoi(req.CarouselRank)
 	mallCarousel := manage.MallCarousel{
@@ -25,7 +26,10 @@ func (m *MallCarouselService) CreateMallCarousel(req manageReq.MallCarouselAddPa
 		CreateTime:   common.JSONTime{Time: time.Now()},
 		UpdateTime:   common.JSONTime{Time: time.Now()},
 	}
-
+	// 这个校验理论上应该放在api层，但是因为前端的传值是string，而我们的校验规则是Int,所以只能转换格式后再校验
+	if err = utils.Verify(mallCarousel, utils.CarouselAddParamVerify); err != nil {
+		return errors.New(err.Error())
+	}
 	err = global.GVA_DB.Create(&mallCarousel).Error
 	return err
 }
@@ -38,16 +42,21 @@ func (m *MallCarouselService) DeleteMallCarousel(ids request.IdsReq) (err error)
 
 // UpdateMallCarousel 更新MallCarousel记录
 func (m *MallCarouselService) UpdateMallCarousel(req manageReq.MallCarouselUpdateParam) (err error) {
-	carouseRank, _ := strconv.Atoi(req.CarouselRank)
 	if errors.Is(global.GVA_DB.Where("carousel_id = ?", req.CarouselId).First(&manage.MallCarousel{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("未查询到记录！")
 	}
-	err = global.GVA_DB.Where("carousel_id = ?", req.CarouselId).UpdateColumns(&manage.MallCarousel{
+	carouseRank, _ := strconv.Atoi(req.CarouselRank)
+	mallCarousel := manage.MallCarousel{
 		CarouselUrl:  req.CarouselUrl,
 		RedirectUrl:  req.RedirectUrl,
 		CarouselRank: carouseRank,
 		UpdateTime:   common.JSONTime{Time: time.Now()},
-	}).Error
+	}
+	// 这个校验理论上应该放在api层，但是因为前端的传值是string，而我们的校验规则是Int,所以只能转换格式后再校验
+	if err = utils.Verify(mallCarousel, utils.CarouselAddParamVerify); err != nil {
+		return errors.New(err.Error())
+	}
+	err = global.GVA_DB.Where("carousel_id = ?", req.CarouselId).UpdateColumns(&mallCarousel).Error
 	return err
 }
 

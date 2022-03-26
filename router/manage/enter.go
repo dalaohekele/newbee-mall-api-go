@@ -5,4 +5,5 @@ type ManageRouterGroup struct {
 	MallAdminUserRouter
 	MallGoodsInfoRouter
 	MallCarouselRouter
+	MallIndexConfigRouter
 }

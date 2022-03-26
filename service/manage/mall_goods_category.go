@@ -22,7 +22,6 @@ func (m *MallGoodsCategoryService) AddCategory(req manageReq.MallGoodsCategoryRe
 		req.CategoryLevel, req.CategoryName).First(&manage.MallGoodsCategory{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("存在相同分类")
 	}
-
 	rank, _ := strconv.Atoi(req.CategoryRank)
 	category := manage.MallGoodsCategory{
 		CategoryLevel: req.CategoryLevel,
@@ -31,6 +30,10 @@ func (m *MallGoodsCategoryService) AddCategory(req manageReq.MallGoodsCategoryRe
 		IsDeleted:     0,
 		CreateTime:    common.JSONTime{Time: time.Now()},
 		UpdateTime:    common.JSONTime{Time: time.Now()},
+	}
+	// 这个校验理论上应该放在api层，但是因为前端的传值是string，而我们的校验规则是Int,所以只能转换格式后再校验
+	if err = utils.Verify(category, utils.GoodsCategoryVerify); err != nil {
+		return errors.New(err.Error())
 	}
 	return global.GVA_DB.Create(&category).Error
 }
@@ -46,6 +49,10 @@ func (m *MallGoodsCategoryService) UpdateCategory(req manageReq.MallGoodsCategor
 		CategoryName: req.CategoryName,
 		CategoryRank: rank,
 		UpdateTime:   common.JSONTime{Time: time.Now()},
+	}
+	// 这个校验理论上应该放在api层，但是因为前端的传值是string，而我们的校验规则是Int,所以只能转换格式后再校验
+	if err := utils.Verify(category, utils.GoodsCategoryVerify); err != nil {
+		return errors.New(err.Error())
 	}
 	return global.GVA_DB.Where("category_id =?", req.CategoryId).Updates(&category).Error
 

@@ -9,7 +9,6 @@ import (
 	"main.go/model/common/response"
 	manageReq "main.go/model/manage/request"
 	manageRes "main.go/model/manage/response"
-	"main.go/utils"
 	"strconv"
 )
 
@@ -20,13 +19,9 @@ type MallGoodsCategoryApi struct {
 func (g *MallGoodsCategoryApi) CreateCategory(c *gin.Context) {
 	var category manageReq.MallGoodsCategoryReq
 	_ = c.ShouldBindJSON(&category)
-	if err := utils.Verify(category, utils.GoodsCategoryVerify); err != nil {
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
 	if err := mallGoodsCategoryService.AddCategory(category); err != nil {
 		global.GVA_LOG.Error("创建失败", zap.Error(err))
-		response.FailWithMessage(err.Error(), c)
+		response.FailWithMessage("创建失败:"+err.Error(), c)
 	} else {
 		response.OkWithMessage("创建成功", c)
 	}
@@ -36,10 +31,6 @@ func (g *MallGoodsCategoryApi) CreateCategory(c *gin.Context) {
 func (g *MallGoodsCategoryApi) UpdateCategory(c *gin.Context) {
 	var category manageReq.MallGoodsCategoryReq
 	_ = c.ShouldBindJSON(&category)
-	if err := utils.Verify(category, utils.GoodsCategoryVerify); err != nil {
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
 	if err := mallGoodsCategoryService.UpdateCategory(category); err != nil {
 		global.GVA_LOG.Error("更新失败", zap.Error(err))
 		response.FailWithMessage("更新失败，存在相同分类", c)
@@ -54,7 +45,7 @@ func (g *MallGoodsCategoryApi) GetCategoryList(c *gin.Context) {
 	_ = c.ShouldBindQuery(&req)
 	if err, list, total := mallGoodsCategoryService.SelectCategoryPage(req); err != nil {
 		global.GVA_LOG.Error("获取失败！", zap.Error(err))
-		response.FailWithMessage("获取失败！", c)
+		response.FailWithMessage("获取失败:"+err.Error(), c)
 	} else {
 		response.OkWithData(response.PageResult{
 			List:       list,
@@ -72,7 +63,7 @@ func (g *MallGoodsCategoryApi) GetCategory(c *gin.Context) {
 	err, goodsCategory := mallGoodsCategoryService.SelectCategoryById(id)
 	if err != nil {
 		global.GVA_LOG.Error("获取失败！", zap.Error(err))
-		response.FailWithMessage("获取失败", c)
+		response.FailWithMessage("获取失败:"+err.Error(), c)
 	} else {
 		response.OkWithData(manageRes.GoodsCategoryResponse{GoodsCategory: goodsCategory}, c)
 	}
@@ -84,7 +75,7 @@ func (g *MallGoodsCategoryApi) DelCategory(c *gin.Context) {
 	_ = c.ShouldBindJSON(&ids)
 	if err, _ := mallGoodsCategoryService.DeleteGoodsCategoriesByIds(ids); err != nil {
 		global.GVA_LOG.Error("删除失败！", zap.Error(err))
-		response.FailWithMessage("删除失败", c)
+		response.FailWithMessage("删除失败"+err.Error(), c)
 	} else {
 		response.OkWithMessage("删除成功", c)
 	}
@@ -97,7 +88,7 @@ func (g *MallGoodsCategoryApi) ListForSelect(c *gin.Context) {
 	err, goodsCategory := mallGoodsCategoryService.SelectCategoryById(id)
 	if err != nil {
 		global.GVA_LOG.Error("获取失败！", zap.Error(err))
-		response.FailWithMessage("获取失败", c)
+		response.FailWithMessage("获取失败"+err.Error(), c)
 	}
 	level := goodsCategory.CategoryLevel
 	if level == enum.LevelThree.Code() ||
