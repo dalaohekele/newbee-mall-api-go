@@ -6,7 +6,7 @@ import (
 
 // 轮播图
 type MallCarousel struct {
-	CarouselId   uint            `json:"carouselId" form:"carouselId" gorm:"primarykey;AUTO_INCREMENT"`
+	CarouselId   int             `json:"carouselId" form:"carouselId" gorm:"primarykey;AUTO_INCREMENT"`
 	CarouselUrl  string          `json:"carouselUrl" form:"carouselUrl" gorm:"column:carousel_url;comment:轮播图;type:varchar(100);"`
 	RedirectUrl  string          `json:"redirectUrl" form:"redirectUrl" gorm:"column:redirect_url;comment:点击后的跳转地址(默认不跳转);type:varchar(100);"`
 	CarouselRank int             `json:"carouselRank" form:"carouselRank" gorm:"column:carousel_rank;comment:排序值(字段越大越靠前);type:int"`

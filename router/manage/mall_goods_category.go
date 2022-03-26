@@ -6,10 +6,10 @@ import (
 	"main.go/middleware"
 )
 
-type GoodsCategoryRouter struct {
+type MallGoodsCategoryRouter struct {
 }
 
-func (s *GoodsCategoryRouter) InitMallGoodsCategoryRouter(Router *gin.RouterGroup) {
+func (s *MallGoodsCategoryRouter) InitMallGoodsCategoryRouter(Router *gin.RouterGroup) {
 	goodsCategoryRouter := Router.Group("v1").Use(middleware.AdminJWTAuth())
 
 	var goodsCategoryApi = v1.ApiGroupApp.ManageApiGroup.MallGoodsCategoryApi

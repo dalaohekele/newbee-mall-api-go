@@ -17,17 +17,34 @@ type MallGoodsInfoService struct {
 }
 
 // CreateMallGoodsInfo 创建MallGoodsInfo
-func (m *MallGoodsInfoService) CreateMallGoodsInfo(mallGoodsInfo manage.MallGoodsInfo) (err error) {
+func (m *MallGoodsInfoService) CreateMallGoodsInfo(req manageReq.GoodsInfoAddParam) (err error) {
 	var goodsCategory manage.MallGoodsCategory
-
-	if !errors.Is(global.GVA_DB.Where("category_id=? AND deleted_status=0", goodsCategory.CategoryId).First(&goodsCategory).Error, gorm.ErrRecordNotFound) &&
-		goodsCategory.CategoryLevel != enum.LevelThree.Code() {
+	err = global.GVA_DB.Where("category_id=?  AND is_deleted=0", req.GoodsCategoryId).First(&goodsCategory).Error
+	if goodsCategory.CategoryLevel != enum.LevelThree.Code() {
 		return errors.New("分类数据异常")
 	}
-	if !errors.Is(global.GVA_DB.Where("goods_name=? AND goods_category_id=?", mallGoodsInfo.GoodsName, mallGoodsInfo.GoodsCategoryId).First(&mallGoodsInfo).Error, gorm.ErrRecordNotFound) {
+	if !errors.Is(global.GVA_DB.Where("goods_name=? AND goods_category_id=?", req.GoodsName, req.GoodsCategoryId).First(&manage.MallGoodsInfo{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("已存在相同的商品信息")
 	}
-	err = global.GVA_DB.Create(&mallGoodsInfo).Error
+	originalPrice, _ := strconv.Atoi(req.OriginalPrice)
+	sellingPrice, _ := strconv.Atoi(req.SellingPrice)
+	stockNum, _ := strconv.Atoi(req.StockNum)
+	goodsSellStatus, _ := strconv.Atoi(req.GoodsSellStatus)
+	goodsInfo := manage.MallGoodsInfo{
+		GoodsName:          req.GoodsName,
+		GoodsIntro:         req.GoodsIntro,
+		GoodsCategoryId:    req.GoodsCategoryId,
+		GoodsCoverImg:      req.GoodsCoverImg,
+		GoodsDetailContent: req.GoodsDetailContent,
+		OriginalPrice:      originalPrice,
+		SellingPrice:       sellingPrice,
+		StockNum:           stockNum,
+		Tag:                req.Tag,
+		GoodsSellStatus:    goodsSellStatus,
+		CreateTime:         common.JSONTime{Time: time.Now()},
+		UpdateTime:         common.JSONTime{Time: time.Now()},
+	}
+	err = global.GVA_DB.Create(&goodsInfo).Error
 	return err
 }
 

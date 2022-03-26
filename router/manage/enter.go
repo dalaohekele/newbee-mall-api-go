@@ -1,7 +1,8 @@
 package manage
 
 type ManageRouterGroup struct {
-	GoodsCategoryRouter
+	MallGoodsCategoryRouter
 	MallAdminUserRouter
 	MallGoodsInfoRouter
+	MallCarouselRouter
 }

@@ -4,38 +4,56 @@ import (
 	"errors"
 	"gorm.io/gorm"
 	"main.go/global"
+	"main.go/model/common"
 	"main.go/model/common/request"
 	"main.go/model/manage"
 	manageReq "main.go/model/manage/request"
+	"strconv"
+	"time"
 )
 
 type MallCarouselService struct {
 }
 
 // CreateMallCarousel 创建MallCarousel记录
-func (m *MallCarouselService) CreateMallCarousel(mallCarousel manage.MallCarousel) (err error) {
+func (m *MallCarouselService) CreateMallCarousel(req manageReq.MallCarouselAddParam) (err error) {
+	carouseRank, _ := strconv.Atoi(req.CarouselRank)
+	mallCarousel := manage.MallCarousel{
+		CarouselUrl:  req.CarouselUrl,
+		RedirectUrl:  req.RedirectUrl,
+		CarouselRank: carouseRank,
+		CreateTime:   common.JSONTime{Time: time.Now()},
+		UpdateTime:   common.JSONTime{Time: time.Now()},
+	}
+
 	err = global.GVA_DB.Create(&mallCarousel).Error
 	return err
 }
 
 // DeleteMallCarousel 删除MallCarousel记录
 func (m *MallCarouselService) DeleteMallCarousel(ids request.IdsReq) (err error) {
-	err = global.GVA_DB.Where("id in ?", ids).Updates(&manage.MallCarousel{IsDeleted: 1}).Error
+	err = global.GVA_DB.Delete(&manage.MallCarousel{}, "carousel_id in ?", ids.Ids).Error
 	return err
 }
 
 // UpdateMallCarousel 更新MallCarousel记录
-func (m *MallCarouselService) UpdateMallCarousel(mallCarousel manage.MallCarousel) (err error) {
-	if errors.Is(global.GVA_DB.Where("carousel_id = ?", mallCarousel.CarouselId).First(&mallCarousel).Error, gorm.ErrRecordNotFound) {
+func (m *MallCarouselService) UpdateMallCarousel(req manageReq.MallCarouselUpdateParam) (err error) {
+	carouseRank, _ := strconv.Atoi(req.CarouselRank)
+	if errors.Is(global.GVA_DB.Where("carousel_id = ?", req.CarouselId).First(&manage.MallCarousel{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("未查询到记录！")
 	}
-	err = global.GVA_DB.Save(&mallCarousel).Error
+	err = global.GVA_DB.Where("carousel_id = ?", req.CarouselId).UpdateColumns(&manage.MallCarousel{
+		CarouselUrl:  req.CarouselUrl,
+		RedirectUrl:  req.RedirectUrl,
+		CarouselRank: carouseRank,
+		UpdateTime:   common.JSONTime{Time: time.Now()},
+	}).Error
 	return err
 }
 
 // GetMallCarousel 根据id获取MallCarousel记录
 func (m *MallCarouselService) GetMallCarousel(id int) (err error, mallCarousel manage.MallCarousel) {
-	err = global.GVA_DB.Where("id = ?", id).First(&mallCarousel).Error
+	err = global.GVA_DB.Where("carousel_id = ?", id).First(&mallCarousel).Error
 	return
 }
 
@@ -51,6 +69,6 @@ func (m *MallCarouselService) GetMallCarouselInfoList(info manageReq.MallCarouse
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Find(&mallCarousels).Error
+	err = db.Limit(limit).Offset(offset).Order("carousel_rank desc").Find(&mallCarousels).Error
 	return err, mallCarousels, total
 }
