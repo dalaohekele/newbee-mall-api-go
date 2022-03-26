@@ -18,11 +18,11 @@ type GoodsInfoAddParam struct {
 	GoodsCoverImg      string `json:"goodsCoverImg"`
 	GoodsCarousel      string `json:"goodsCarousel"`
 	GoodsDetailContent string `json:"goodsDetailContent"`
-	OriginalPrice      int    `json:"originalPrice"`
-	SellingPrice       int    `json:"sellingPrice"`
-	StockNum           int    `json:"stockNum"`
+	OriginalPrice      string `json:"originalPrice"`
+	SellingPrice       string `json:"sellingPrice"`
+	StockNum           string `json:"stockNum"`
 	Tag                string `json:"tag"`
-	GoodsSellStatus    int    `json:"goodsSellStatus"`
+	GoodsSellStatus    string `json:"goodsSellStatus"`
 }
 
 // GoodsInfoUpdateParam 更新商品信息的入参

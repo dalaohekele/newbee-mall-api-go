@@ -17,7 +17,7 @@ type MallGoodsInfoApi struct {
 
 // CreateMallGoodsInfo 创建MallGoodsInfo
 func (mallGoodsInfoApi *MallGoodsInfoApi) CreateMallGoodsInfo(c *gin.Context) {
-	var mallGoodsInfo manage.MallGoodsInfo
+	var mallGoodsInfo manageReq.GoodsInfoAddParam
 	_ = c.ShouldBindJSON(&mallGoodsInfo)
 	if err := utils.Verify(mallGoodsInfo, utils.GoodsAddParamVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
