@@ -14,7 +14,7 @@ type MallIndexConfigApi struct {
 }
 
 // CreateMallIndexConfig 创建MallIndexConfig
-func (mallIndexConfigApi *MallIndexConfigApi) CreateMallIndexConfig(c *gin.Context) {
+func (m *MallIndexConfigApi) CreateMallIndexConfig(c *gin.Context) {
 	var req manageReq.MallIndexConfigAddParams
 	_ = c.ShouldBindJSON(&req)
 	if err := mallIndexConfigService.CreateMallIndexConfig(req); err != nil {
@@ -26,7 +26,7 @@ func (mallIndexConfigApi *MallIndexConfigApi) CreateMallIndexConfig(c *gin.Conte
 }
 
 // DeleteMallIndexConfig 删除MallIndexConfig
-func (mallIndexConfigApi *MallIndexConfigApi) DeleteMallIndexConfig(c *gin.Context) {
+func (m *MallIndexConfigApi) DeleteMallIndexConfig(c *gin.Context) {
 	var ids request.IdsReq
 	_ = c.ShouldBindJSON(&ids)
 	if err := mallIndexConfigService.DeleteMallIndexConfig(ids); err != nil {
@@ -38,7 +38,7 @@ func (mallIndexConfigApi *MallIndexConfigApi) DeleteMallIndexConfig(c *gin.Conte
 }
 
 // UpdateMallIndexConfig 更新MallIndexConfig
-func (mallIndexConfigApi *MallIndexConfigApi) UpdateMallIndexConfig(c *gin.Context) {
+func (m *MallIndexConfigApi) UpdateMallIndexConfig(c *gin.Context) {
 	var req manageReq.MallIndexConfigUpdateParams
 	_ = c.ShouldBindJSON(&req)
 	if err := mallIndexConfigService.UpdateMallIndexConfig(req); err != nil {
@@ -50,7 +50,7 @@ func (mallIndexConfigApi *MallIndexConfigApi) UpdateMallIndexConfig(c *gin.Conte
 }
 
 // FindMallIndexConfig 用id查询MallIndexConfig
-func (mallIndexConfigApi *MallIndexConfigApi) FindMallIndexConfig(c *gin.Context) {
+func (m *MallIndexConfigApi) FindMallIndexConfig(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	if err, mallIndexConfig := mallIndexConfigService.GetMallIndexConfig(uint(id)); err != nil {
 		global.GVA_LOG.Error("查询失败!"+err.Error(), zap.Error(err))
@@ -61,7 +61,7 @@ func (mallIndexConfigApi *MallIndexConfigApi) FindMallIndexConfig(c *gin.Context
 }
 
 // GetMallIndexConfigList 分页获取MallIndexConfig列表
-func (mallIndexConfigApi *MallIndexConfigApi) GetMallIndexConfigList(c *gin.Context) {
+func (m *MallIndexConfigApi) GetMallIndexConfigList(c *gin.Context) {
 	var pageInfo manageReq.MallIndexConfigSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := mallIndexConfigService.GetMallIndexConfigInfoList(pageInfo); err != nil {

@@ -17,7 +17,7 @@ type MallIndexConfigService struct {
 }
 
 // CreateMallIndexConfig 创建MallIndexConfig记录
-func (mallIndexConfigService *MallIndexConfigService) CreateMallIndexConfig(req manageReq.MallIndexConfigAddParams) (err error) {
+func (m *MallIndexConfigService) CreateMallIndexConfig(req manageReq.MallIndexConfigAddParams) (err error) {
 	var goodsInfo manage.MallGoodsInfo
 	if errors.Is(global.GVA_DB.Where("goods_id=?", req.GoodsId).First(&goodsInfo).Error, gorm.ErrRecordNotFound) {
 		return errors.New("商品不存在")
@@ -45,13 +45,13 @@ func (mallIndexConfigService *MallIndexConfigService) CreateMallIndexConfig(req 
 }
 
 // DeleteMallIndexConfig 删除MallIndexConfig记录
-func (mallIndexConfigService *MallIndexConfigService) DeleteMallIndexConfig(ids request.IdsReq) (err error) {
+func (m *MallIndexConfigService) DeleteMallIndexConfig(ids request.IdsReq) (err error) {
 	err = global.GVA_DB.Where("config_id in ?", ids.Ids).Delete(&manage.MallIndexConfig{}).Error
 	return err
 }
 
 // UpdateMallIndexConfig 更新MallIndexConfig记录
-func (mallIndexConfigService *MallIndexConfigService) UpdateMallIndexConfig(req manageReq.MallIndexConfigUpdateParams) (err error) {
+func (m *MallIndexConfigService) UpdateMallIndexConfig(req manageReq.MallIndexConfigUpdateParams) (err error) {
 	//更新indexConfig
 	if errors.Is(global.GVA_DB.Where("goods_id = ?", req.GoodsId).First(&manage.MallGoodsInfo{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("商品不存在！")
@@ -82,13 +82,13 @@ func (mallIndexConfigService *MallIndexConfigService) UpdateMallIndexConfig(req 
 }
 
 // GetMallIndexConfig 根据id获取MallIndexConfig记录
-func (mallIndexConfigService *MallIndexConfigService) GetMallIndexConfig(id uint) (err error, mallIndexConfig manage.MallIndexConfig) {
+func (m *MallIndexConfigService) GetMallIndexConfig(id uint) (err error, mallIndexConfig manage.MallIndexConfig) {
 	err = global.GVA_DB.Where("config_id = ?", id).First(&mallIndexConfig).Error
 	return
 }
 
 // GetMallIndexConfigInfoList 分页获取MallIndexConfig记录
-func (mallIndexConfigService *MallIndexConfigService) GetMallIndexConfigInfoList(info manageReq.MallIndexConfigSearch) (err error, list interface{}, total int64) {
+func (m *MallIndexConfigService) GetMallIndexConfigInfoList(info manageReq.MallIndexConfigSearch) (err error, list interface{}, total int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.PageNumber - 1)
 	// 创建db
