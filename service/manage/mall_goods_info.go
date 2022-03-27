@@ -61,6 +61,7 @@ func (m *MallGoodsInfoService) DeleteMallGoodsInfo(mallGoodsInfo manage.MallGood
 // ChangeMallGoodsInfoByIds 上下架
 func (m *MallGoodsInfoService) ChangeMallGoodsInfoByIds(ids request.IdsReq, sellStatus string) (err error) {
 	intSellStatus, _ := strconv.Atoi(sellStatus)
+	//更新字段为0时，不能直接UpdateColumns
 	err = global.GVA_DB.Model(&manage.MallGoodsInfo{}).Where("goods_id in ?", ids.Ids).Update("goods_sell_status", intSellStatus).Error
 	return err
 }
