@@ -35,6 +35,7 @@ func Routers() *gin.Engine {
 		manageRouter.InitMallGoodsInfoRouter(ManageGroup)
 		manageRouter.InitMallCarouselRouter(ManageGroup)
 		manageRouter.InitMallIndexConfigRouter(ManageGroup)
+		manageRouter.InitMallOrderRouter(ManageGroup)
 	}
 	global.GVA_LOG.Info("router register success")
 	return Router

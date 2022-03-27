@@ -8,4 +8,5 @@ type ManageServiceGroup struct {
 	MallGoodsInfoService
 	MallCarouselService
 	MallIndexConfigService
+	MallOrderService
 }
