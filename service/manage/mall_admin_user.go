@@ -24,13 +24,38 @@ func (m *MallAdminUserService) CreateMallAdminUser(mallAdminUser manage.MallAdmi
 	return err
 }
 
-// UpdateMallAdminUser 更新MallAdminUser记录
-func (m *MallAdminUserService) UpdateMallAdminUser(mallAdminUser manage.MallAdminUser) (err error) {
-	if !errors.Is(global.GVA_DB.Where("login_user_name = ?", mallAdminUser.LoginUserName).First(&manage.MallAdminUser{}).Error, gorm.ErrRecordNotFound) {
-		return errors.New("存在相同用户名")
+// UpdateMallAdminName 更新MallAdminUser昵称
+func (m *MallAdminUserService) UpdateMallAdminName(token string, req manageReq.MallUpdateNameParam) (err error) {
+	var adminUserToken manage.MallAdminUserToken
+	err = global.GVA_DB.Where("token =? ", token).First(&adminUserToken).Error
+	if err != nil {
+		return errors.New("不存在的用户")
 	}
-	err = global.GVA_DB.Save(&mallAdminUser).Error
+	err = global.GVA_DB.Where("admin_user_id = ?", adminUserToken.AdminUserId).Updates(&manage.MallAdminUser{
+		LoginUserName: req.LoginUserName,
+		NickName:      req.NickName,
+	}).Error
 	return err
+}
+
+func (m *MallAdminUserService) UpdateMallAdminPassWord(token string, req manageReq.MallUpdatePasswordParam) (err error) {
+	var adminUserToken manage.MallAdminUserToken
+	err = global.GVA_DB.Where("token =? ", token).First(&adminUserToken).Error
+	if err != nil {
+		return errors.New("用户未登录")
+	}
+	var adminUser manage.MallAdminUser
+	err = global.GVA_DB.Where("admin_user_id =?", adminUserToken.AdminUserId).First(&adminUser).Error
+	if err != nil {
+		return errors.New("不存在的用户")
+	}
+	if adminUser.LoginPassword != req.OriginalPassword {
+		return errors.New("原密码不正确")
+	}
+	adminUser.LoginPassword = req.NewPassword
+
+	err = global.GVA_DB.Where("admin_user_id=?", adminUser.AdminUserId).Updates(&adminUser).Error
+	return
 }
 
 // GetMallAdminUser 根据id获取MallAdminUser记录

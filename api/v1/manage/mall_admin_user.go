@@ -39,18 +39,15 @@ func (m *MallAdminUserApi) CreateMallAdminUser(c *gin.Context) {
 
 // UpdateMallAdminUserPassword 修改密码
 func (m *MallAdminUserApi) UpdateMallAdminUserPassword(c *gin.Context) {
-	var params manage.MallAdminUser
-	_ = c.ShouldBindJSON(&params)
-	if err := utils.Verify(params, utils.AdminUserChangePasswordVerify); err != nil {
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-	mallAdminUserName := manage.MallAdminUser{
-		LoginPassword: utils.MD5V([]byte(params.LoginPassword)),
-	}
-	if err := mallAdminUserService.UpdateMallAdminUser(mallAdminUserName); err != nil {
+	var req manageReq.MallUpdatePasswordParam
+	_ = c.ShouldBindJSON(&req)
+	//mallAdminUserName := manage.MallAdminUser{
+	//	LoginPassword: utils.MD5V([]byte(req.LoginPassword)),
+	//}
+	userToken := c.GetHeader("token")
+	if err := mallAdminUserService.UpdateMallAdminPassWord(userToken, req); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
+		response.FailWithMessage("更新失败:"+err.Error(), c)
 	} else {
 		response.OkWithMessage("更新成功", c)
 	}
@@ -59,9 +56,10 @@ func (m *MallAdminUserApi) UpdateMallAdminUserPassword(c *gin.Context) {
 
 // UpdateMallAdminUserName 更新MallAdminUser用户名
 func (m *MallAdminUserApi) UpdateMallAdminUserName(c *gin.Context) {
-	var mallAdminUser manage.MallAdminUser
-	_ = c.ShouldBindJSON(&mallAdminUser)
-	if err := mallAdminUserService.UpdateMallAdminUser(mallAdminUser); err != nil {
+	var req manageReq.MallUpdateNameParam
+	_ = c.ShouldBindJSON(&req)
+	userToken := c.GetHeader("token")
+	if err := mallAdminUserService.UpdateMallAdminName(userToken, req); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
