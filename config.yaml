@@ -13,7 +13,6 @@ mysql:
   log-mode: ""
   log-zap: false
 system:
-  env: public
   addr: 8888
   db-type: mysql
   oss-type: local
@@ -23,7 +22,7 @@ system:
 zap:
   level: info
   format: console
-  prefix: '[github.com/flipped-aurora/gin-vue-admin/server]'
+  prefix: '[newbee_mall]'
   director: log
   showLine: true
   encode-level: LowercaseColorLevelEncoder
