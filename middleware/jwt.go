@@ -19,6 +19,8 @@ func AdminJWTAuth() gin.HandlerFunc {
 		}
 		err, mallAdminUserToken := mallAdminUserTokenService.ExistAdminToken(token)
 		if err != nil {
+			response.FailWithDetailed(gin.H{"reload": true}, "未登录或非法访问", c)
+			c.Abort()
 			return
 		}
 		if time.Now().After(mallAdminUserToken.ExpireTime) {

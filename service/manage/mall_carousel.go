@@ -8,6 +8,7 @@ import (
 	"main.go/model/common/request"
 	"main.go/model/manage"
 	manageReq "main.go/model/manage/request"
+	manageRes "main.go/model/manage/response"
 	"main.go/utils"
 	"strconv"
 	"time"
@@ -80,4 +81,18 @@ func (m *MallCarouselService) GetMallCarouselInfoList(info manageReq.MallCarouse
 	}
 	err = db.Limit(limit).Offset(offset).Order("carousel_rank desc").Find(&mallCarousels).Error
 	return err, mallCarousels, total
+}
+
+// GetCarouselsForIndex 返回固定数量的轮播图对象(首页调用)
+func (m *MallCarouselService) GetCarouselsForIndex(num int) (err error, mallCarousels []manage.MallCarousel, list interface{}) {
+	var carouselIndexs []manageRes.MallCarouselIndexResponse
+	err = global.GVA_DB.Where("is_deleted = 0").Order("carousel_rank desc").Limit(num).Find(&mallCarousels).Error
+	for _, carousel := range mallCarousels {
+		carouselIndex := manageRes.MallCarouselIndexResponse{
+			CarouselUrl: carousel.CarouselUrl,
+			RedirectUrl: carousel.RedirectUrl,
+		}
+		carouselIndexs = append(carouselIndexs, carouselIndex)
+	}
+	return err, mallCarousels, carouselIndexs
 }
