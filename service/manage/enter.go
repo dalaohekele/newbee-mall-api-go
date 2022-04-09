@@ -6,7 +6,7 @@ type ManageServiceGroup struct {
 	ManageUserService
 	ManageGoodsCategoryService
 	ManageGoodsInfoService
-	MallCarouselService
+	ManageCarouselService
 	ManageIndexConfigService
 	ManageOrderService
 }

@@ -14,11 +14,10 @@ import (
 	"time"
 )
 
-type MallCarouselService struct {
+type ManageCarouselService struct {
 }
 
-// CreateMallCarousel 创建MallCarousel
-func (m *MallCarouselService) CreateMallCarousel(req manageReq.MallCarouselAddParam) (err error) {
+func (m *ManageCarouselService) CreateCarousel(req manageReq.MallCarouselAddParam) (err error) {
 	carouseRank, _ := strconv.Atoi(req.CarouselRank)
 	mallCarousel := manage.MallCarousel{
 		CarouselUrl:  req.CarouselUrl,
@@ -35,14 +34,12 @@ func (m *MallCarouselService) CreateMallCarousel(req manageReq.MallCarouselAddPa
 	return err
 }
 
-// DeleteMallCarousel 删除MallCarousel记录
-func (m *MallCarouselService) DeleteMallCarousel(ids request.IdsReq) (err error) {
+func (m *ManageCarouselService) DeleteCarousel(ids request.IdsReq) (err error) {
 	err = global.GVA_DB.Delete(&manage.MallCarousel{}, "carousel_id in ?", ids.Ids).Error
 	return err
 }
 
-// UpdateMallCarousel 更新MallCarousel记录
-func (m *MallCarouselService) UpdateMallCarousel(req manageReq.MallCarouselUpdateParam) (err error) {
+func (m *ManageCarouselService) UpdateCarousel(req manageReq.MallCarouselUpdateParam) (err error) {
 	if errors.Is(global.GVA_DB.Where("carousel_id = ?", req.CarouselId).First(&manage.MallCarousel{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("未查询到记录！")
 	}
@@ -61,14 +58,12 @@ func (m *MallCarouselService) UpdateMallCarousel(req manageReq.MallCarouselUpdat
 	return err
 }
 
-// GetMallCarousel 根据id获取MallCarousel记录
-func (m *MallCarouselService) GetMallCarousel(id int) (err error, mallCarousel manage.MallCarousel) {
+func (m *ManageCarouselService) GetCarousel(id int) (err error, mallCarousel manage.MallCarousel) {
 	err = global.GVA_DB.Where("carousel_id = ?", id).First(&mallCarousel).Error
 	return
 }
 
-// GetMallCarouselInfoList 分页获取MallCarousel记录
-func (m *MallCarouselService) GetMallCarouselInfoList(info manageReq.MallCarouselSearch) (err error, list interface{}, total int64) {
+func (m *ManageCarouselService) GetCarouselInfoList(info manageReq.MallCarouselSearch) (err error, list interface{}, total int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.PageNumber - 1)
 	// 创建db
@@ -84,7 +79,7 @@ func (m *MallCarouselService) GetMallCarouselInfoList(info manageReq.MallCarouse
 }
 
 // GetCarouselsForIndex 返回固定数量的轮播图对象(首页调用)
-func (m *MallCarouselService) GetCarouselsForIndex(num int) (err error, mallCarousels []manage.MallCarousel, list interface{}) {
+func (m *ManageCarouselService) GetCarouselsForIndex(num int) (err error, mallCarousels []manage.MallCarousel, list interface{}) {
 	var carouselIndexs []manageRes.MallCarouselIndexResponse
 	err = global.GVA_DB.Where("is_deleted = 0").Order("carousel_rank desc").Limit(num).Find(&mallCarousels).Error
 	for _, carousel := range mallCarousels {

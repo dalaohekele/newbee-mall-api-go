@@ -17,6 +17,6 @@ var mallUserService = service.ServiceGroupApp.ManageServiceGroup.ManageUserServi
 var mallGoodsCategoryService = service.ServiceGroupApp.ManageServiceGroup.ManageGoodsCategoryService
 var fileUploadAndDownloadService = service.ServiceGroupApp.ExampleServiceGroup.FileUploadAndDownloadService
 var mallGoodsInfoService = service.ServiceGroupApp.ManageServiceGroup.ManageGoodsInfoService
-var mallCarouselService = service.ServiceGroupApp.ManageServiceGroup.MallCarouselService
+var mallCarouselService = service.ServiceGroupApp.ManageServiceGroup.ManageCarouselService
 var mallIndexConfigService = service.ServiceGroupApp.ManageServiceGroup.ManageIndexConfigService
 var mallOrderService = service.ServiceGroupApp.ManageServiceGroup.ManageOrderService
