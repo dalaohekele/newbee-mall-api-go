@@ -4,8 +4,9 @@ import "main.go/service"
 
 type MallGroup struct {
 	MallIndexApi
+	MallGoodsInfoApi
 }
 
-var mallCarouselService = service.ServiceGroupApp.ManageServiceGroup.ManageCarouselService
-var mallGoodsInfoService = service.ServiceGroupApp.ManageServiceGroup.ManageGoodsInfoService
-var mallIndexConfigService = service.ServiceGroupApp.ManageServiceGroup.ManageIndexConfigService
+var mallCarouselService = service.ServiceGroupApp.MallServiceGroup.MallCarouselService
+var mallGoodsInfoService = service.ServiceGroupApp.MallServiceGroup.MallGoodsInfoService
+var mallIndexConfigService = service.ServiceGroupApp.MallServiceGroup.MallIndexInfoService

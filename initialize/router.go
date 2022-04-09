@@ -43,6 +43,7 @@ func Routers() *gin.Engine {
 	{
 		// 商城前端路由
 		mallRouter.InitMallCarouselIndexRouter(MallGroup)
+		mallRouter.InitMallGoodsInfoIndexRouter(MallGroup)
 	}
 	global.GVA_LOG.Info("router register success")
 	return Router
