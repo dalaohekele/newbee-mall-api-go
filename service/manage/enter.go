@@ -1,12 +1,12 @@
 package manage
 
 type ManageServiceGroup struct {
-	MallAdminUserService
-	MallAdminUserTokenService
-	MallUserService
-	MallGoodsCategoryService
-	MallGoodsInfoService
+	ManageAdminUserService
+	ManageAdminUserTokenService
+	ManageUserService
+	ManageGoodsCategoryService
+	ManageGoodsInfoService
 	MallCarouselService
-	MallIndexConfigService
-	MallOrderService
+	ManageIndexConfigService
+	ManageOrderService
 }

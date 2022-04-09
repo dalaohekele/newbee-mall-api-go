@@ -14,11 +14,11 @@ import (
 	"time"
 )
 
-type MallGoodsInfoService struct {
+type ManageGoodsInfoService struct {
 }
 
 // CreateMallGoodsInfo 创建MallGoodsInfo
-func (m *MallGoodsInfoService) CreateMallGoodsInfo(req manageReq.GoodsInfoAddParam) (err error) {
+func (m *ManageGoodsInfoService) CreateMallGoodsInfo(req manageReq.GoodsInfoAddParam) (err error) {
 	var goodsCategory manage.MallGoodsCategory
 	err = global.GVA_DB.Where("category_id=?  AND is_deleted=0", req.GoodsCategoryId).First(&goodsCategory).Error
 	if goodsCategory.CategoryLevel != enum.LevelThree.Code() {
@@ -53,13 +53,13 @@ func (m *MallGoodsInfoService) CreateMallGoodsInfo(req manageReq.GoodsInfoAddPar
 }
 
 // DeleteMallGoodsInfo 删除MallGoodsInfo记录
-func (m *MallGoodsInfoService) DeleteMallGoodsInfo(mallGoodsInfo manage.MallGoodsInfo) (err error) {
+func (m *ManageGoodsInfoService) DeleteMallGoodsInfo(mallGoodsInfo manage.MallGoodsInfo) (err error) {
 	err = global.GVA_DB.Delete(&mallGoodsInfo).Error
 	return err
 }
 
 // ChangeMallGoodsInfoByIds 上下架
-func (m *MallGoodsInfoService) ChangeMallGoodsInfoByIds(ids request.IdsReq, sellStatus string) (err error) {
+func (m *ManageGoodsInfoService) ChangeMallGoodsInfoByIds(ids request.IdsReq, sellStatus string) (err error) {
 	intSellStatus, _ := strconv.Atoi(sellStatus)
 	//更新字段为0时，不能直接UpdateColumns
 	err = global.GVA_DB.Model(&manage.MallGoodsInfo{}).Where("goods_id in ?", ids.Ids).Update("goods_sell_status", intSellStatus).Error
@@ -67,7 +67,7 @@ func (m *MallGoodsInfoService) ChangeMallGoodsInfoByIds(ids request.IdsReq, sell
 }
 
 // UpdateMallGoodsInfo 更新MallGoodsInfo记录
-func (m *MallGoodsInfoService) UpdateMallGoodsInfo(req manageReq.GoodsInfoUpdateParam) (err error) {
+func (m *ManageGoodsInfoService) UpdateMallGoodsInfo(req manageReq.GoodsInfoUpdateParam) (err error) {
 	goodsId, _ := strconv.Atoi(req.GoodsId)
 	originalPrice, _ := strconv.Atoi(req.OriginalPrice)
 	stockNum, _ := strconv.Atoi(req.StockNum)
@@ -93,13 +93,13 @@ func (m *MallGoodsInfoService) UpdateMallGoodsInfo(req manageReq.GoodsInfoUpdate
 }
 
 // GetMallGoodsInfo 根据id获取MallGoodsInfo记录
-func (m *MallGoodsInfoService) GetMallGoodsInfo(id int) (err error, mallGoodsInfo manage.MallGoodsInfo) {
+func (m *ManageGoodsInfoService) GetMallGoodsInfo(id int) (err error, mallGoodsInfo manage.MallGoodsInfo) {
 	err = global.GVA_DB.Where("goods_id = ?", id).First(&mallGoodsInfo).Error
 	return
 }
 
 // GetMallGoodsInfoInfoList 分页获取MallGoodsInfo记录
-func (m *MallGoodsInfoService) GetMallGoodsInfoInfoList(info manageReq.MallGoodsInfoSearch, goodsName string, goodsSellStatus string) (err error, list interface{}, total int64) {
+func (m *ManageGoodsInfoService) GetMallGoodsInfoInfoList(info manageReq.MallGoodsInfoSearch, goodsName string, goodsSellStatus string) (err error, list interface{}, total int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.PageNumber - 1)
 	// 创建db

@@ -12,11 +12,11 @@ import (
 	"time"
 )
 
-type MallAdminUserService struct {
+type ManageAdminUserService struct {
 }
 
 // CreateMallAdminUser 创建MallAdminUser记录
-func (m *MallAdminUserService) CreateMallAdminUser(mallAdminUser manage.MallAdminUser) (err error) {
+func (m *ManageAdminUserService) CreateMallAdminUser(mallAdminUser manage.MallAdminUser) (err error) {
 	if !errors.Is(global.GVA_DB.Where("login_user_name = ?", mallAdminUser.LoginUserName).First(&manage.MallAdminUser{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("存在相同用户名")
 	}
@@ -25,7 +25,7 @@ func (m *MallAdminUserService) CreateMallAdminUser(mallAdminUser manage.MallAdmi
 }
 
 // UpdateMallAdminName 更新MallAdminUser昵称
-func (m *MallAdminUserService) UpdateMallAdminName(token string, req manageReq.MallUpdateNameParam) (err error) {
+func (m *ManageAdminUserService) UpdateMallAdminName(token string, req manageReq.MallUpdateNameParam) (err error) {
 	var adminUserToken manage.MallAdminUserToken
 	err = global.GVA_DB.Where("token =? ", token).First(&adminUserToken).Error
 	if err != nil {
@@ -38,7 +38,7 @@ func (m *MallAdminUserService) UpdateMallAdminName(token string, req manageReq.M
 	return err
 }
 
-func (m *MallAdminUserService) UpdateMallAdminPassWord(token string, req manageReq.MallUpdatePasswordParam) (err error) {
+func (m *ManageAdminUserService) UpdateMallAdminPassWord(token string, req manageReq.MallUpdatePasswordParam) (err error) {
 	var adminUserToken manage.MallAdminUserToken
 	err = global.GVA_DB.Where("token =? ", token).First(&adminUserToken).Error
 	if err != nil {
@@ -59,7 +59,7 @@ func (m *MallAdminUserService) UpdateMallAdminPassWord(token string, req manageR
 }
 
 // GetMallAdminUser 根据id获取MallAdminUser记录
-func (m *MallAdminUserService) GetMallAdminUser(token string) (err error, mallAdminUser manage.MallAdminUser) {
+func (m *ManageAdminUserService) GetMallAdminUser(token string) (err error, mallAdminUser manage.MallAdminUser) {
 	var adminToken manage.MallAdminUserToken
 	if errors.Is(global.GVA_DB.Where("token =?", token).First(&adminToken).Error, gorm.ErrRecordNotFound) {
 		return errors.New("不存在的用户"), mallAdminUser
@@ -69,7 +69,7 @@ func (m *MallAdminUserService) GetMallAdminUser(token string) (err error, mallAd
 }
 
 // AdminLogin 管理员登陆
-func (m *MallAdminUserService) AdminLogin(params manageReq.MallAdminLoginParam) (err error, mallAdminUser manage.MallAdminUser, adminToken manage.MallAdminUserToken) {
+func (m *ManageAdminUserService) AdminLogin(params manageReq.MallAdminLoginParam) (err error, mallAdminUser manage.MallAdminUser, adminToken manage.MallAdminUserToken) {
 	err = global.GVA_DB.Where("login_user_name=? AND login_password=?", params.UserName, params.PasswordMd5).First(&mallAdminUser).Error
 	if mallAdminUser != (manage.MallAdminUser{}) {
 		token := getNewToken(time.Now().UnixNano()/1e6, int(mallAdminUser.AdminUserId))

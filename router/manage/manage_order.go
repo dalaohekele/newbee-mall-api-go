@@ -5,13 +5,12 @@ import (
 	v1 "main.go/api/v1"
 )
 
-type MallOrderRouter struct {
+type ManageOrderRouter struct {
 }
 
-// InitMallOrderRouter 初始化 MallOrder 路由信息
-func (s *MallOrderRouter) InitMallOrderRouter(Router *gin.RouterGroup) {
+func (r *ManageOrderRouter) InitManageOrderRouter(Router *gin.RouterGroup) {
 	mallOrderRouter := Router.Group("v1")
-	var mallOrderApi = v1.ApiGroupApp.ManageApiGroup.MallOrderApi
+	var mallOrderApi = v1.ApiGroupApp.ManageApiGroup.ManageOrderApi
 	{
 		mallOrderRouter.PUT("orders/checkDone", mallOrderApi.CheckDoneOrder) // 发货
 		mallOrderRouter.PUT("orders/checkOut", mallOrderApi.CheckOutOrder)   // 出库

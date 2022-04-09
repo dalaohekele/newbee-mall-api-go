@@ -11,11 +11,11 @@ import (
 	"time"
 )
 
-type MallOrderService struct {
+type ManageOrderService struct {
 }
 
 // CheckDone 修改订单状态为配货成功
-func (mallOrderService *MallOrderService) CheckDone(ids request.IdsReq) (err error) {
+func (m *ManageOrderService) CheckDone(ids request.IdsReq) (err error) {
 	var orders []manage.MallOrder
 	err = global.GVA_DB.Where("order_id in ?", ids.Ids).Find(&orders).Error
 	var errorOrders string
@@ -41,7 +41,7 @@ func (mallOrderService *MallOrderService) CheckDone(ids request.IdsReq) (err err
 }
 
 // CheckOut 出库
-func (mallOrderService *MallOrderService) CheckOut(ids request.IdsReq) (err error) {
+func (m *ManageOrderService) CheckOut(ids request.IdsReq) (err error) {
 	var orders []manage.MallOrder
 	err = global.GVA_DB.Where("order_id in ?", ids.Ids).Find(&orders).Error
 	var errorOrders string
@@ -67,7 +67,7 @@ func (mallOrderService *MallOrderService) CheckOut(ids request.IdsReq) (err erro
 }
 
 // CloseOrder 商家关闭订单
-func (mallOrderService *MallOrderService) CloseOrder(ids request.IdsReq) (err error) {
+func (m *ManageOrderService) CloseOrder(ids request.IdsReq) (err error) {
 	var orders []manage.MallOrder
 	err = global.GVA_DB.Where("order_id in ?", ids.Ids).Find(&orders).Error
 	var errorOrders string
@@ -93,13 +93,13 @@ func (mallOrderService *MallOrderService) CloseOrder(ids request.IdsReq) (err er
 }
 
 // GetMallOrder 根据id获取MallOrder记录
-func (mallOrderService *MallOrderService) GetMallOrder(id int) (err error, mallOrder manage.MallOrder) {
+func (m *ManageOrderService) GetMallOrder(id int) (err error, mallOrder manage.MallOrder) {
 	err = global.GVA_DB.Where("id = ?", id).First(&mallOrder).Error
 	return
 }
 
 // GetMallOrderInfoList 分页获取MallOrder记录
-func (mallOrderService *MallOrderService) GetMallOrderInfoList(info manageReq.MallOrderSearch) (err error, list interface{}, total int64) {
+func (m *ManageOrderService) GetMallOrderInfoList(info manageReq.MallOrderSearch) (err error, list interface{}, total int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.PageNumber - 1)
 	// 创建db

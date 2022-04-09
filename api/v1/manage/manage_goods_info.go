@@ -11,11 +11,10 @@ import (
 	"strconv"
 )
 
-type MallGoodsInfoApi struct {
+type ManageGoodsInfoApi struct {
 }
 
-// CreateMallGoodsInfo 创建MallGoodsInfo
-func (mallGoodsInfoApi *MallGoodsInfoApi) CreateMallGoodsInfo(c *gin.Context) {
+func (m *ManageGoodsInfoApi) CreateGoodsInfo(c *gin.Context) {
 	var mallGoodsInfo manageReq.GoodsInfoAddParam
 	_ = c.ShouldBindJSON(&mallGoodsInfo)
 	if err := mallGoodsInfoService.CreateMallGoodsInfo(mallGoodsInfo); err != nil {
@@ -27,7 +26,7 @@ func (mallGoodsInfoApi *MallGoodsInfoApi) CreateMallGoodsInfo(c *gin.Context) {
 }
 
 // DeleteMallGoodsInfo 删除MallGoodsInfo
-func (mallGoodsInfoApi *MallGoodsInfoApi) DeleteMallGoodsInfo(c *gin.Context) {
+func (m *ManageGoodsInfoApi) DeleteGoodsInfo(c *gin.Context) {
 	var mallGoodsInfo manage.MallGoodsInfo
 	_ = c.ShouldBindJSON(&mallGoodsInfo)
 	if err := mallGoodsInfoService.DeleteMallGoodsInfo(mallGoodsInfo); err != nil {
@@ -39,7 +38,7 @@ func (mallGoodsInfoApi *MallGoodsInfoApi) DeleteMallGoodsInfo(c *gin.Context) {
 }
 
 // ChangeMallGoodsInfoByIds 批量删除MallGoodsInfo
-func (mallGoodsInfoApi *MallGoodsInfoApi) ChangeMallGoodsInfoByIds(c *gin.Context) {
+func (m *ManageGoodsInfoApi) ChangeGoodsInfoByIds(c *gin.Context) {
 	var IDS request.IdsReq
 	_ = c.ShouldBindJSON(&IDS)
 	sellStatus := c.Param("status")
@@ -52,7 +51,7 @@ func (mallGoodsInfoApi *MallGoodsInfoApi) ChangeMallGoodsInfoByIds(c *gin.Contex
 }
 
 // UpdateMallGoodsInfo 更新MallGoodsInfo
-func (mallGoodsInfoApi *MallGoodsInfoApi) UpdateMallGoodsInfo(c *gin.Context) {
+func (m *ManageGoodsInfoApi) UpdateGoodsInfo(c *gin.Context) {
 	var mallGoodsInfo manageReq.GoodsInfoUpdateParam
 	_ = c.ShouldBindJSON(&mallGoodsInfo)
 	if err := mallGoodsInfoService.UpdateMallGoodsInfo(mallGoodsInfo); err != nil {
@@ -64,7 +63,7 @@ func (mallGoodsInfoApi *MallGoodsInfoApi) UpdateMallGoodsInfo(c *gin.Context) {
 }
 
 // FindMallGoodsInfo 用id查询MallGoodsInfo
-func (mallGoodsInfoApi *MallGoodsInfoApi) FindMallGoodsInfo(c *gin.Context) {
+func (m *ManageGoodsInfoApi) FindGoodsInfo(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	err, goodsInfo := mallGoodsInfoService.GetMallGoodsInfo(id)
 	if err != nil {
@@ -87,7 +86,7 @@ func (mallGoodsInfoApi *MallGoodsInfoApi) FindMallGoodsInfo(c *gin.Context) {
 }
 
 // GetMallGoodsInfoList 分页获取MallGoodsInfo列表
-func (mallGoodsInfoApi *MallGoodsInfoApi) GetMallGoodsInfoList(c *gin.Context) {
+func (m *ManageGoodsInfoApi) GetGoodsInfoList(c *gin.Context) {
 	var pageInfo manageReq.MallGoodsInfoSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	goodsName := c.Query("goodsName")

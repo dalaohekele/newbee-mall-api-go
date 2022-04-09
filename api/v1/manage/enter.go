@@ -3,20 +3,20 @@ package manage
 import "main.go/service"
 
 type ManageGroup struct {
-	MallAdminUserApi
-	MallGoodsCategoryApi
-	MallGoodsInfoApi
-	MallCarouselApi
-	MallIndexConfigApi
-	MallOrderApi
+	ManageAdminUserApi
+	ManageGoodsCategoryApi
+	ManageGoodsInfoApi
+	ManageCarouselApi
+	ManageIndexConfigApi
+	ManageOrderApi
 }
 
-var mallAdminUserService = service.ServiceGroupApp.ManageServiceGroup.MallAdminUserService
-var mallAdminUserTokenService = service.ServiceGroupApp.ManageServiceGroup.MallAdminUserTokenService
-var mallUserService = service.ServiceGroupApp.ManageServiceGroup.MallUserService
-var mallGoodsCategoryService = service.ServiceGroupApp.ManageServiceGroup.MallGoodsCategoryService
+var mallAdminUserService = service.ServiceGroupApp.ManageServiceGroup.ManageAdminUserService
+var mallAdminUserTokenService = service.ServiceGroupApp.ManageServiceGroup.ManageAdminUserTokenService
+var mallUserService = service.ServiceGroupApp.ManageServiceGroup.ManageUserService
+var mallGoodsCategoryService = service.ServiceGroupApp.ManageServiceGroup.ManageGoodsCategoryService
 var fileUploadAndDownloadService = service.ServiceGroupApp.ExampleServiceGroup.FileUploadAndDownloadService
-var mallGoodsInfoService = service.ServiceGroupApp.ManageServiceGroup.MallGoodsInfoService
+var mallGoodsInfoService = service.ServiceGroupApp.ManageServiceGroup.ManageGoodsInfoService
 var mallCarouselService = service.ServiceGroupApp.ManageServiceGroup.MallCarouselService
-var mallIndexConfigService = service.ServiceGroupApp.ManageServiceGroup.MallIndexConfigService
-var mallOrderService = service.ServiceGroupApp.ManageServiceGroup.MallOrderService
+var mallIndexConfigService = service.ServiceGroupApp.ManageServiceGroup.ManageIndexConfigService
+var mallOrderService = service.ServiceGroupApp.ManageServiceGroup.ManageOrderService

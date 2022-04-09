@@ -13,11 +13,11 @@ import (
 	"time"
 )
 
-type MallGoodsCategoryService struct {
+type ManageGoodsCategoryService struct {
 }
 
 // AddCategory 添加商品分类
-func (m *MallGoodsCategoryService) AddCategory(req manageReq.MallGoodsCategoryReq) (err error) {
+func (m *ManageGoodsCategoryService) AddCategory(req manageReq.MallGoodsCategoryReq) (err error) {
 	if !errors.Is(global.GVA_DB.Where("category_level=? AND category_name=? AND is_deleted=0",
 		req.CategoryLevel, req.CategoryName).First(&manage.MallGoodsCategory{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("存在相同分类")
@@ -39,7 +39,7 @@ func (m *MallGoodsCategoryService) AddCategory(req manageReq.MallGoodsCategoryRe
 }
 
 // UpdateCategory 更新商品分类
-func (m *MallGoodsCategoryService) UpdateCategory(req manageReq.MallGoodsCategoryReq) (err error) {
+func (m *ManageGoodsCategoryService) UpdateCategory(req manageReq.MallGoodsCategoryReq) (err error) {
 	if !errors.Is(global.GVA_DB.Where("category_level=? AND category_name=? AND is_deleted=0",
 		req.CategoryLevel, req.CategoryName).First(&manage.MallGoodsCategory{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("存在相同分类")
@@ -59,7 +59,7 @@ func (m *MallGoodsCategoryService) UpdateCategory(req manageReq.MallGoodsCategor
 }
 
 // SelectCategoryPage 获取分类分页数据
-func (m *MallGoodsCategoryService) SelectCategoryPage(req manageReq.SearchCategoryParams) (err error, list interface{}, total int64) {
+func (m *ManageGoodsCategoryService) SelectCategoryPage(req manageReq.SearchCategoryParams) (err error, list interface{}, total int64) {
 	limit := req.PageSize
 	if limit > 1000 {
 		limit = 1000
@@ -87,18 +87,18 @@ func (m *MallGoodsCategoryService) SelectCategoryPage(req manageReq.SearchCatego
 }
 
 // SelectCategoryById 获取单个分类数据
-func (m *MallGoodsCategoryService) SelectCategoryById(categoryId int) (err error, goodsCategory manage.MallGoodsCategory) {
+func (m *ManageGoodsCategoryService) SelectCategoryById(categoryId int) (err error, goodsCategory manage.MallGoodsCategory) {
 	err = global.GVA_DB.Where("category_id=?", categoryId).First(&goodsCategory).Error
 	return err, goodsCategory
 }
 
 // DeleteGoodsCategoriesByIds 批量设置失效
-func (m *MallGoodsCategoryService) DeleteGoodsCategoriesByIds(ids request.IdsReq) (err error, goodsCategory manage.MallGoodsCategory) {
+func (m *ManageGoodsCategoryService) DeleteGoodsCategoriesByIds(ids request.IdsReq) (err error, goodsCategory manage.MallGoodsCategory) {
 	err = global.GVA_DB.Where("category_id in ?", ids.Ids).UpdateColumns(manage.MallGoodsCategory{IsDeleted: 1}).Error
 	return err, goodsCategory
 }
 
-func (m *MallGoodsCategoryService) SelectByLevelAndParentIdsAndNumber(parentId int, categoryLevel int) (err error, goodsCategories []manage.MallGoodsCategory) {
+func (m *ManageGoodsCategoryService) SelectByLevelAndParentIdsAndNumber(parentId int, categoryLevel int) (err error, goodsCategories []manage.MallGoodsCategory) {
 	err = global.GVA_DB.Where("category_id in ?", parentId).Where("category_level=?", categoryLevel).Where("is_deleted=0").Error
 	return err, goodsCategories
 

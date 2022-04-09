@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var mallAdminUserTokenService = service.ServiceGroupApp.ManageServiceGroup.MallAdminUserTokenService
+var manageAdminUserTokenService = service.ServiceGroupApp.ManageServiceGroup.ManageAdminUserTokenService
 
 func AdminJWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -17,7 +17,7 @@ func AdminJWTAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		err, mallAdminUserToken := mallAdminUserTokenService.ExistAdminToken(token)
+		err, mallAdminUserToken := manageAdminUserTokenService.ExistAdminToken(token)
 		if err != nil {
 			response.FailWithDetailed(gin.H{"reload": true}, "未登录或非法访问", c)
 			c.Abort()

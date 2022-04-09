@@ -10,11 +10,11 @@ import (
 	"strconv"
 )
 
-type MallOrderApi struct {
+type ManageOrderApi struct {
 }
 
 // CheckDoneOrder 发货
-func (mallOrderApi *MallOrderApi) CheckDoneOrder(c *gin.Context) {
+func (m *ManageOrderApi) CheckDoneOrder(c *gin.Context) {
 	var IDS request.IdsReq
 	_ = c.ShouldBindJSON(&IDS)
 	if err := mallOrderService.CheckDone(IDS); err != nil {
@@ -26,7 +26,7 @@ func (mallOrderApi *MallOrderApi) CheckDoneOrder(c *gin.Context) {
 }
 
 // CheckOutOrder 出库
-func (mallOrderApi *MallOrderApi) CheckOutOrder(c *gin.Context) {
+func (m *ManageOrderApi) CheckOutOrder(c *gin.Context) {
 	var IDS request.IdsReq
 	_ = c.ShouldBindJSON(&IDS)
 	if err := mallOrderService.CheckOut(IDS); err != nil {
@@ -38,7 +38,7 @@ func (mallOrderApi *MallOrderApi) CheckOutOrder(c *gin.Context) {
 }
 
 // CloseOrder 出库
-func (mallOrderApi *MallOrderApi) CloseOrder(c *gin.Context) {
+func (m *ManageOrderApi) CloseOrder(c *gin.Context) {
 	var IDS request.IdsReq
 	_ = c.ShouldBindJSON(&IDS)
 	if err := mallOrderService.CloseOrder(IDS); err != nil {
@@ -50,7 +50,7 @@ func (mallOrderApi *MallOrderApi) CloseOrder(c *gin.Context) {
 }
 
 // FindMallOrder 用id查询MallOrder
-func (mallOrderApi *MallOrderApi) FindMallOrder(c *gin.Context) {
+func (m *ManageOrderApi) FindMallOrder(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("orderId"))
 	if err, mallOrder := mallOrderService.GetMallOrder(id); err != nil {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))
@@ -61,7 +61,7 @@ func (mallOrderApi *MallOrderApi) FindMallOrder(c *gin.Context) {
 }
 
 // GetMallOrderList 分页获取MallOrder列表
-func (mallOrderApi *MallOrderApi) GetMallOrderList(c *gin.Context) {
+func (m *ManageOrderApi) GetMallOrderList(c *gin.Context) {
 	var pageInfo manageReq.MallOrderSearch
 	_ = c.ShouldBindQuery(&pageInfo)
 	if err, list, total := mallOrderService.GetMallOrderInfoList(pageInfo); err != nil {

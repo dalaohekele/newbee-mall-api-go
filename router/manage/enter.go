@@ -1,10 +1,10 @@
 package manage
 
 type ManageRouterGroup struct {
-	MallGoodsCategoryRouter
-	MallAdminUserRouter
-	MallGoodsInfoRouter
-	MallCarouselRouter
-	MallIndexConfigRouter
-	MallOrderRouter
+	ManageGoodsCategoryRouter
+	ManageAdminUserRouter
+	ManageGoodsInfoRouter
+	ManageCarouselRouter
+	ManageIndexConfigRouter
+	ManageOrderRouter
 }

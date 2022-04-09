@@ -7,5 +7,5 @@ type MallGroup struct {
 }
 
 var mallCarouselService = service.ServiceGroupApp.ManageServiceGroup.MallCarouselService
-var mallGoodsInfoService = service.ServiceGroupApp.ManageServiceGroup.MallGoodsInfoService
-var mallIndexConfigService = service.ServiceGroupApp.ManageServiceGroup.MallIndexConfigService
+var mallGoodsInfoService = service.ServiceGroupApp.ManageServiceGroup.ManageGoodsInfoService
+var mallIndexConfigService = service.ServiceGroupApp.ManageServiceGroup.ManageIndexConfigService

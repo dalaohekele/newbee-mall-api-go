@@ -30,12 +30,12 @@ func Routers() *gin.Engine {
 	}
 	{
 		//商城后管路由初始化
-		manageRouter.InitMallAdminUserRouter(ManageGroup)
-		manageRouter.InitMallGoodsCategoryRouter(ManageGroup)
-		manageRouter.InitMallGoodsInfoRouter(ManageGroup)
-		manageRouter.InitMallCarouselRouter(ManageGroup)
-		manageRouter.InitMallIndexConfigRouter(ManageGroup)
-		manageRouter.InitMallOrderRouter(ManageGroup)
+		manageRouter.InitManageAdminUserRouter(ManageGroup)
+		manageRouter.InitManageGoodsCategoryRouter(ManageGroup)
+		manageRouter.InitManageGoodsInfoRouter(ManageGroup)
+		manageRouter.InitManageCarouselRouter(ManageGroup)
+		manageRouter.InitManageIndexConfigRouter(ManageGroup)
+		manageRouter.InitManageOrderRouter(ManageGroup)
 	}
 	//商城前端路由
 	mallRouter := router.RouterGroupApp.Mall

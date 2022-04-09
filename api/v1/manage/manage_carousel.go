@@ -10,14 +10,13 @@ import (
 	"strconv"
 )
 
-type MallIndexConfigApi struct {
+type ManageCarouselApi struct {
 }
 
-// CreateMallIndexConfig 创建MallIndexConfig
-func (m *MallIndexConfigApi) CreateMallIndexConfig(c *gin.Context) {
-	var req manageReq.MallIndexConfigAddParams
+func (m *ManageCarouselApi) CreateCarousel(c *gin.Context) {
+	var req manageReq.MallCarouselAddParam
 	_ = c.ShouldBindJSON(&req)
-	if err := mallIndexConfigService.CreateMallIndexConfig(req); err != nil {
+	if err := mallCarouselService.CreateMallCarousel(req); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败"+err.Error(), c)
 	} else {
@@ -25,11 +24,10 @@ func (m *MallIndexConfigApi) CreateMallIndexConfig(c *gin.Context) {
 	}
 }
 
-// DeleteMallIndexConfig 删除MallIndexConfig
-func (m *MallIndexConfigApi) DeleteMallIndexConfig(c *gin.Context) {
+func (m *ManageCarouselApi) DeleteCarousel(c *gin.Context) {
 	var ids request.IdsReq
 	_ = c.ShouldBindJSON(&ids)
-	if err := mallIndexConfigService.DeleteMallIndexConfig(ids); err != nil {
+	if err := mallCarouselService.DeleteMallCarousel(ids); err != nil {
 		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败"+err.Error(), c)
 	} else {
@@ -37,11 +35,10 @@ func (m *MallIndexConfigApi) DeleteMallIndexConfig(c *gin.Context) {
 	}
 }
 
-// UpdateMallIndexConfig 更新MallIndexConfig
-func (m *MallIndexConfigApi) UpdateMallIndexConfig(c *gin.Context) {
-	var req manageReq.MallIndexConfigUpdateParams
+func (m *ManageCarouselApi) UpdateCarousel(c *gin.Context) {
+	var req manageReq.MallCarouselUpdateParam
 	_ = c.ShouldBindJSON(&req)
-	if err := mallIndexConfigService.UpdateMallIndexConfig(req); err != nil {
+	if err := mallCarouselService.UpdateMallCarousel(req); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败:"+err.Error(), c)
 	} else {
@@ -49,22 +46,22 @@ func (m *MallIndexConfigApi) UpdateMallIndexConfig(c *gin.Context) {
 	}
 }
 
-// FindMallIndexConfig 用id查询MallIndexConfig
-func (m *MallIndexConfigApi) FindMallIndexConfig(c *gin.Context) {
+// FindMallCarousel 用id查询MallCarousel
+func (m *ManageCarouselApi) FindCarousel(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	if err, mallIndexConfig := mallIndexConfigService.GetMallIndexConfig(uint(id)); err != nil {
+	if err, mallCarousel := mallCarouselService.GetMallCarousel(id); err != nil {
 		global.GVA_LOG.Error("查询失败!"+err.Error(), zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
-		response.OkWithData(mallIndexConfig, c)
+		response.OkWithData(mallCarousel, c)
 	}
 }
 
-// GetMallIndexConfigList 分页获取MallIndexConfig列表
-func (m *MallIndexConfigApi) GetMallIndexConfigList(c *gin.Context) {
-	var pageInfo manageReq.MallIndexConfigSearch
+// GetMallCarouselList 分页获取MallCarousel列表
+func (m *ManageCarouselApi) GetCarouselList(c *gin.Context) {
+	var pageInfo manageReq.MallCarouselSearch
 	_ = c.ShouldBindQuery(&pageInfo)
-	if err, list, total := mallIndexConfigService.GetMallIndexConfigInfoList(pageInfo); err != nil {
+	if err, list, total := mallCarouselService.GetMallCarouselInfoList(pageInfo); err != nil {
 		global.GVA_LOG.Error("获取失败!"+err.Error(), zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {

@@ -8,11 +8,11 @@ import (
 	manageReq "main.go/model/manage/request"
 )
 
-type MallUserService struct {
+type ManageUserService struct {
 }
 
 // LockUser 修改用户状态
-func (m *MallUserService) LockUser(idReq request.IdsReq, lockStatus int) (err error) {
+func (m *ManageUserService) LockUser(idReq request.IdsReq, lockStatus int) (err error) {
 	if lockStatus != 0 && lockStatus != 1 {
 		return errors.New("操作非法！")
 	}
@@ -22,7 +22,7 @@ func (m *MallUserService) LockUser(idReq request.IdsReq, lockStatus int) (err er
 }
 
 // GetMallUserInfoList 分页获取商城注册用户列表
-func (m *MallUserService) GetMallUserInfoList(info manageReq.MallUserSearch) (err error, list interface{}, total int64) {
+func (m *ManageUserService) GetMallUserInfoList(info manageReq.MallUserSearch) (err error, list interface{}, total int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.PageNumber - 1)
 	// 创建db

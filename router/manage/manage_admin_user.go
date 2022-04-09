@@ -6,18 +6,17 @@ import (
 	"main.go/middleware"
 )
 
-type MallAdminUserRouter struct {
+type ManageAdminUserRouter struct {
 }
 
-// InitMallAdminUserRouter 初始化 MallAdminUser 路由信息
-func (s *MallAdminUserRouter) InitMallAdminUserRouter(Router *gin.RouterGroup) {
+func (r *ManageAdminUserRouter) InitManageAdminUserRouter(Router *gin.RouterGroup) {
 	mallAdminUserRouter := Router.Group("v1").Use(middleware.AdminJWTAuth())
 	mallAdminUserWithoutRouter := Router.Group("v1")
-	var mallAdminUserApi = v1.ApiGroupApp.ManageApiGroup.MallAdminUserApi
+	var mallAdminUserApi = v1.ApiGroupApp.ManageApiGroup.ManageAdminUserApi
 	{
-		mallAdminUserRouter.POST("createMallAdminUser", mallAdminUserApi.CreateMallAdminUser) // 新建MallAdminUser
-		mallAdminUserRouter.PUT("adminUser/name", mallAdminUserApi.UpdateMallAdminUserName)   // 更新MallAdminUser
-		mallAdminUserRouter.PUT("adminUser/password", mallAdminUserApi.UpdateMallAdminUserPassword)
+		mallAdminUserRouter.POST("createMallAdminUser", mallAdminUserApi.CreateAdminUser) // 新建MallAdminUser
+		mallAdminUserRouter.PUT("adminUser/name", mallAdminUserApi.UpdateAdminUserName)   // 更新MallAdminUser
+		mallAdminUserRouter.PUT("adminUser/password", mallAdminUserApi.UpdateAdminUserPassword)
 		mallAdminUserRouter.GET("users", mallAdminUserApi.UserList)
 		mallAdminUserRouter.PUT("users/:lockStatus", mallAdminUserApi.LockUser)
 		mallAdminUserRouter.GET("adminUser/profile", mallAdminUserApi.AdminUserProfile) // 根据ID获取 admin详情
