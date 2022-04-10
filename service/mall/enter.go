@@ -4,4 +4,5 @@ type MallServiceGroup struct {
 	MallIndexInfoService
 	MallCarouselService
 	MallGoodsInfoService
+	MallGoodsCategoryService
 }
