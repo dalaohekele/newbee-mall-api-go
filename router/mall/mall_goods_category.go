@@ -8,7 +8,7 @@ import (
 type MallGoodsCategoryIndexRouter struct {
 }
 
-func (s *MallGoodsInfoIndexRouter) InitMallGoodsCategoryIndexRouter(Router *gin.RouterGroup) {
+func (m *MallGoodsInfoIndexRouter) InitMallGoodsCategoryIndexRouter(Router *gin.RouterGroup) {
 	mallGoodsRouter := Router.Group("v1")
 	var mallGoodsCategoryApi = v1.ApiGroupApp.MallApiGroup.MallGoodsCategoryApi
 	{

@@ -8,7 +8,7 @@ import (
 type MallCarouselIndexRouter struct {
 }
 
-func (s *MallCarouselIndexRouter) InitMallCarouselIndexRouter(Router *gin.RouterGroup) {
+func (m *MallCarouselIndexRouter) InitMallCarouselIndexRouter(Router *gin.RouterGroup) {
 	mallCarouselRouter := Router.Group("v1")
 	var mallCarouselApi = v1.ApiGroupApp.MallApiGroup.MallIndexApi
 	{

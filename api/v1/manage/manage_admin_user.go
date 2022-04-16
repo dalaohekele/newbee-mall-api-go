@@ -93,7 +93,7 @@ func (m *ManageAdminUserApi) AdminLogin(c *gin.Context) {
 // AdminLogout 登出
 func (m *ManageAdminUserApi) AdminLogout(c *gin.Context) {
 	var adminUser manage.MallAdminUser
-	_ = c.ShouldBindJSON(adminUser)
+	_ = c.ShouldBindJSON(&adminUser)
 	var ids request.IdsReq
 	ids.Ids = append(ids.Ids, int(adminUser.AdminUserId))
 	if err := mallAdminUserTokenService.DeleteMallAdminUserTokenByIds(ids); err != nil {
