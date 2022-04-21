@@ -5,7 +5,7 @@ import (
 )
 
 type MallOrder struct {
-	OrderId     uint            `json:"orderId" form:"orderId" gorm:"primarykey;AUTO_INCREMENT"`
+	OrderId     int             `json:"orderId" form:"orderId" gorm:"primarykey;AUTO_INCREMENT"`
 	OrderNo     string          `json:"orderNo" form:"orderNo" gorm:"column:order_no;comment:订单号;type:varchar(20);"`
 	UserId      int             `json:"userId" form:"userId" gorm:"column:user_id;comment:用户主键id;type:bigint"`
 	TotalPrice  int             `json:"totalPrice" form:"totalPrice" gorm:"column:total_price;comment:订单总价;type:int"`
