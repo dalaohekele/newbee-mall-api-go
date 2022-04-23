@@ -13,6 +13,36 @@ import (
 type MallOrderApi struct {
 }
 
+func (m *MallOrderApi) SaveOrder(c *gin.Context) {
+	var saveOrderParam mallReq.SaveOrderParam
+	_ = c.ShouldBindJSON(&saveOrderParam)
+	if err := utils.Verify(saveOrderParam, utils.SaveOrderParamVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+	}
+	token := c.GetHeader("token")
+
+	priceTotal := 0
+	err, itemsForSave := mallShopCartService.GetCartItemsForSettle(token, saveOrderParam.CartItemIds)
+	if len(itemsForSave) < 1 {
+		response.FailWithMessage("无数据:"+err.Error(), c)
+	} else {
+		//总价
+		for _, newBeeMallShoppingCartItemVO := range itemsForSave {
+			priceTotal = priceTotal + newBeeMallShoppingCartItemVO.GoodsCount*newBeeMallShoppingCartItemVO.SellingPrice
+		}
+		if priceTotal < 1 {
+			response.FailWithMessage("价格异常", c)
+		}
+		_, userAddress := mallUserAddressService.GetMallUserDefaultAddress(token)
+		if err, saveOrderResult := mallOrderService.SaveOrder(token, userAddress, itemsForSave); err != nil {
+			global.GVA_LOG.Error("生成订单失败", zap.Error(err))
+			response.FailWithMessage("生成订单失败:"+err.Error(), c)
+		} else {
+			response.OkWithData(saveOrderResult, c)
+		}
+	}
+}
+
 func (m *MallOrderApi) PaySuccess(c *gin.Context) {
 	var req mallReq.PaySuccessParams
 	_ = c.ShouldBindQuery(&req)
@@ -25,7 +55,7 @@ func (m *MallOrderApi) PaySuccess(c *gin.Context) {
 
 func (m *MallOrderApi) FinishOrder(c *gin.Context) {
 	var orderNo string
-	_ = c.ShouldBindQuery("orderNo")
+	_ = c.ShouldBindQuery(&orderNo)
 	token := c.GetHeader("token")
 	if err := mallOrderService.FinishOrder(token, orderNo); err != nil {
 		global.GVA_LOG.Error("订单签收失败", zap.Error(err))
@@ -37,7 +67,7 @@ func (m *MallOrderApi) FinishOrder(c *gin.Context) {
 
 func (m *MallOrderApi) CancelOrder(c *gin.Context) {
 	var orderNo string
-	_ = c.ShouldBindQuery("orderNo")
+	_ = c.ShouldBindQuery(&orderNo)
 	token := c.GetHeader("token")
 	if err := mallOrderService.CancelOrder(token, orderNo); err != nil {
 		global.GVA_LOG.Error("订单签收失败", zap.Error(err))
@@ -45,6 +75,17 @@ func (m *MallOrderApi) CancelOrder(c *gin.Context) {
 	}
 	response.OkWithMessage("订单签收成功", c)
 
+}
+func (m *MallOrderApi) OrderDetailPage(c *gin.Context) {
+	var orderNo string
+	_ = c.ShouldBindQuery(&orderNo)
+	token := c.GetHeader("token")
+	if err, orderDetail := mallOrderService.GetOrderDetailByOrderNo(token, orderNo); err != nil {
+		global.GVA_LOG.Error("查询订单详情接口", zap.Error(err))
+		response.FailWithMessage("查询订单详情接口:"+err.Error(), c)
+	} else {
+		response.OkWithData(orderDetail, c)
+	}
 }
 
 func (m *MallOrderApi) OrderList(c *gin.Context) {

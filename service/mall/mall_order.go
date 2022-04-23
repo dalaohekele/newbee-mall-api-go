@@ -10,11 +10,101 @@ import (
 	mallReq "main.go/model/mall/request"
 	mallRes "main.go/model/mall/response"
 	"main.go/model/manage"
+	manageReq "main.go/model/manage/request"
 	"main.go/utils"
 	"time"
 )
 
 type MallOrderService struct {
+}
+
+func (m *MallOrderService) SaveOrder(token string, userAddress mall.MallUserAddress, myShoppingCartItems []mallRes.CartItemResponse) (err error, orderNo string) {
+	var userToken mall.MallUserToken
+	err = global.GVA_DB.Where("token =?", token).First(&userToken).Error
+	if err != nil {
+		return errors.New("不存在的用户"), orderNo
+	}
+
+	var itemIdList []int
+	var goodsIds []int
+	for _, cartItem := range myShoppingCartItems {
+		itemIdList = append(itemIdList, cartItem.CartItemId)
+		goodsIds = append(goodsIds, cartItem.GoodsId)
+	}
+
+	var newBeeMallGoods []manage.MallGoodsInfo
+	global.GVA_DB.Where("goods_id in ? order by field(goods_id,?)", goodsIds, goodsIds).Find(&newBeeMallGoods)
+	//检查是否包含已下架商品
+	for _, mallGoods := range newBeeMallGoods {
+		if mallGoods.GoodsSellStatus != 0 {
+			return errors.New("已下架，无法生成订单"), orderNo
+		}
+	}
+	var newBeeMallGoodsMap map[int]manage.MallGoodsInfo
+	for _, mallGoods := range newBeeMallGoods {
+		newBeeMallGoodsMap[mallGoods.GoodsId] = mallGoods
+	}
+	//判断商品库存
+	for _, shoppingCartItemVO := range myShoppingCartItems {
+		//查出的商品中不存在购物车中的这条关联商品数据，直接返回错误提醒
+		if _, ok := newBeeMallGoodsMap[shoppingCartItemVO.GoodsId]; !ok {
+			return errors.New("购物车数据异常！"), orderNo
+		}
+		if shoppingCartItemVO.GoodsCount > newBeeMallGoodsMap[shoppingCartItemVO.GoodsId].StockNum {
+			return errors.New("库存不足！"), orderNo
+		}
+	}
+
+	//删除购物项
+	if len(itemIdList) > 0 && len(goodsIds) > 0 {
+		if err = global.GVA_DB.Where("cart_item_id in ?", itemIdList).Updates(mall.MallShoppingCartItem{IsDeleted: 1}).Error; err != nil {
+			var stockNumDTOS []manageReq.StockNumDTO
+			copier.Copy(&stockNumDTOS, &myShoppingCartItems)
+			for _, stockNumDTO := range stockNumDTOS {
+				var goodsInfo manage.MallGoodsInfo
+				global.GVA_DB.Where("goods_id =?", stockNumDTO.GoodsId).First(&goodsInfo)
+				if err = global.GVA_DB.Where("goods_id =? and stock_num>= ? and goods_sell_status = 0", stockNumDTO.GoodsId, stockNumDTO.GoodsCount).Updates(manage.MallGoodsInfo{StockNum: goodsInfo.StockNum - stockNumDTO.GoodsCount}).Error; err != nil {
+					return errors.New("库存不足！"), orderNo
+				}
+			}
+			//生成订单号
+			orderNo = utils.GenOrderNo()
+			priceTotal := 0
+			//保存订单
+			var newBeeMallOrder manage.MallOrder
+			newBeeMallOrder.OrderNo = orderNo
+			newBeeMallOrder.UserId = userToken.UserId
+			//总价
+			for _, newBeeMallShoppingCartItemVO := range myShoppingCartItems {
+				priceTotal = priceTotal + newBeeMallShoppingCartItemVO.GoodsCount*newBeeMallShoppingCartItemVO.SellingPrice
+			}
+			if priceTotal < 1 {
+				return errors.New("订单价格异常！"), orderNo
+			}
+			newBeeMallOrder.TotalPrice = priceTotal
+			newBeeMallOrder.ExtraInfo = ""
+			//生成订单项并保存订单项纪录
+			if err = global.GVA_DB.Save(&newBeeMallOrder).Error; err != nil {
+				return errors.New("订单入库失败！"), orderNo
+			}
+			//生成订单收货地址快照，并保存至数据库
+			var newBeeMallOrderAddress mall.MallOrderAddress
+			copier.Copy(&newBeeMallOrderAddress, &userAddress)
+			newBeeMallOrderAddress.OrderId = newBeeMallOrder.OrderId
+			//生成所有的订单项快照，并保存至数据库
+			var newBeeMallOrderItems []manage.MallOrderItem
+			for _, newBeeMallShoppingCartItemVO := range myShoppingCartItems {
+				var newBeeMallOrderItem manage.MallOrderItem
+				copier.Copy(&newBeeMallOrderItem, &newBeeMallShoppingCartItemVO)
+				newBeeMallOrderItem.OrderId = newBeeMallOrder.OrderId
+				newBeeMallOrderItems = append(newBeeMallOrderItems, newBeeMallOrderItem)
+			}
+			if err = global.GVA_DB.Save(&newBeeMallOrderItems).Error; err != nil {
+				return err, orderNo
+			}
+		}
+	}
+	return
 }
 
 func (m *MallOrderService) PaySuccess(orderNo string, payType int) (err error) {
@@ -76,6 +166,40 @@ func (m *MallOrderService) CancelOrder(token string, orderNo string) (err error)
 	return
 }
 
+func (m *MallOrderService) GetOrderDetailByOrderNo(token string, orderNo string) (err error, orderDetail mallRes.MallOrderResponse) {
+	var userToken mall.MallUserToken
+	err = global.GVA_DB.Where("token =?", token).First(&userToken).Error
+	if err != nil {
+		return errors.New("不存在的用户"), orderDetail
+	}
+	var mallOrder manage.MallOrder
+	if err = global.GVA_DB.Where("order_no=? and is_deleted = 0", orderNo).First(&mallOrder).Error; err != nil {
+		return errors.New("未查询到记录！"), orderDetail
+	}
+	if mallOrder.UserId != userToken.UserId {
+		return errors.New("禁止该操作！"), orderDetail
+	}
+	var orderItems []manage.MallOrderItem
+	err = global.GVA_DB.Where("order_id = ?", mallOrder.OrderId).Find(&orderItems).Error
+	if len(orderItems) <= 0 {
+		return errors.New("订单项不存在！"), orderDetail
+	}
+
+	var newBeeMallOrderItemVOS []mallRes.NewBeeMallOrderItemVO
+	copier.Copy(&newBeeMallOrderItemVOS, &orderItems)
+
+	var newBeeMallOrderDetailVO mallRes.MallOrderDetailVO
+	copier.Copy(&newBeeMallOrderDetailVO, &mallOrder)
+
+	_, OrderStatusStr := enum.MallOrderStatusEnum.Info(newBeeMallOrderDetailVO.OrderStatus)
+	_, payTapStr := enum.MallOrderStatusEnum.Info(newBeeMallOrderDetailVO.PayType)
+	newBeeMallOrderDetailVO.OrderStatusString = OrderStatusStr
+	newBeeMallOrderDetailVO.PayTypeString = payTapStr
+	newBeeMallOrderDetailVO.NewBeeMallOrderItemVOS = newBeeMallOrderItemVOS
+
+	return
+}
+
 func (m *MallOrderService) MallOrderListBySearch(token string, req mallReq.OrderSearchParams) (err error, list interface{}, total int64) {
 	var userToken mall.MallUserToken
 	err = global.GVA_DB.Where("token =?", token).First(&userToken).Error
@@ -119,13 +243,12 @@ func (m *MallOrderService) MallOrderListBySearch(token string, req mallReq.Order
 			}
 			//封装每个订单列表对象的订单项数据
 			for k, newBeeMallOrderListVO := range orderListVOS {
-				if k == newBeeMallOrderListVO.OrderId {
+				if _, ok := itemByOrderIdMap[newBeeMallOrderListVO.OrderId]; ok {
 					orderItemListTemp := itemByOrderIdMap[k]
-					var newBeeMallOrderItemVOS []mallRes.NewBeeMallOrderItemVOS
+					var newBeeMallOrderItemVOS []mallRes.NewBeeMallOrderItemVO
 					copier.Copy(&newBeeMallOrderItemVOS, &orderItemListTemp)
 					newBeeMallOrderListVO.NewBeeMallOrderItemVOS = newBeeMallOrderItemVOS
 				}
-
 			}
 		}
 

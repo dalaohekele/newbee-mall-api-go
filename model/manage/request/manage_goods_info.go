@@ -42,3 +42,8 @@ type GoodsInfoUpdateParam struct {
 	UpdateUser         int             `json:"updateUser" form:"updateUser" gorm:"column:update_user;comment:修改者主键id;type:int"`
 	UpdateTime         common.JSONTime `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:商品修改时间;type:datetime"`
 }
+
+type StockNumDTO struct {
+	GoodsId    int `json:"goodsId"`
+	GoodsCount int `json:"goodsCount"`
+}
