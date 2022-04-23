@@ -191,8 +191,8 @@ func (m *MallOrderService) GetOrderDetailByOrderNo(token string, orderNo string)
 	var newBeeMallOrderDetailVO mallRes.MallOrderDetailVO
 	copier.Copy(&newBeeMallOrderDetailVO, &mallOrder)
 
-	_, OrderStatusStr := enum.MallOrderStatusEnum.Info(newBeeMallOrderDetailVO.OrderStatus)
-	_, payTapStr := enum.MallOrderStatusEnum.Info(newBeeMallOrderDetailVO.PayType)
+	_, OrderStatusStr := enum.GetNewBeeMallOrderStatusEnumByStatus(newBeeMallOrderDetailVO.OrderStatus)
+	_, payTapStr := enum.GetNewBeeMallOrderStatusEnumByStatus(newBeeMallOrderDetailVO.PayType)
 	newBeeMallOrderDetailVO.OrderStatusString = OrderStatusStr
 	newBeeMallOrderDetailVO.PayTypeString = payTapStr
 	newBeeMallOrderDetailVO.NewBeeMallOrderItemVOS = newBeeMallOrderItemVOS
@@ -223,7 +223,7 @@ func (m *MallOrderService) MallOrderListBySearch(token string, req mallReq.Order
 		copier.Copy(&orderListVOS, &newBeeMallOrders)
 		//设置订单状态中文显示值
 		for _, newBeeMallOrderListVO := range orderListVOS {
-			_, statusStr := enum.MallOrderStatusEnum.Info(newBeeMallOrderListVO.OrderStatus)
+			_, statusStr := enum.GetNewBeeMallOrderStatusEnumByStatus(newBeeMallOrderListVO.OrderStatus)
 			newBeeMallOrderListVO.OrderStatusString = statusStr
 		}
 		// 返回订单id
