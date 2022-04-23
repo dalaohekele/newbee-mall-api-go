@@ -11,8 +11,7 @@ import (
 type MallGoodsCategoryService struct {
 }
 
-func (m *MallGoodsCategoryService) GetCategoriesForIndex() (err error, firstLevelCategoryVOS []mallRes.FirstLevelCategoryRes) {
-
+func (m *MallGoodsCategoryService) GetCategoriesForIndex() (err error, newBeeMallIndexCategoryVOS []mallRes.FirstLevelCategoryRes) {
 	//获取一级分类的固定数量的数据
 	_, firstLevelCategories := selectByLevelAndParentIdsAndNumber([]int{0}, enum.LevelOne.Code(), 10)
 	if firstLevelCategories != nil {
@@ -30,18 +29,18 @@ func (m *MallGoodsCategoryService) GetCategoriesForIndex() (err error, firstLeve
 			//获取三级分类的数据
 			_, thirdLevelCategories := selectByLevelAndParentIdsAndNumber(secondLevelIds, enum.LevelThree.Code(), 0)
 			if thirdLevelCategories != nil {
+				thirdLevelCategoryMap := make(map[int]manage.MallGoodsCategory)
 				//根据 parentId 将 thirdLevelCategories 分组
-				var thirdLevelCategoryMap map[int]interface{}
 				for _, thirdLevelCategory := range thirdLevelCategories {
 					thirdLevelCategoryMap[thirdLevelCategory.ParentId] = thirdLevelCategory
 				}
 				var secondLevelCategoryVOS []mallRes.SecondLevelCategoryRes
 				//处理二级分类
-				for k, secondLevelGoodsCategory := range secondLevelCategories {
+				for _, secondLevelGoodsCategory := range secondLevelCategories {
 					var secondLevelCategoryVO mallRes.SecondLevelCategoryRes
 					err = copier.Copy(&secondLevelCategoryVO, &secondLevelGoodsCategory)
 					//如果该二级分类下有数据则放入 secondLevelCategoryVOS 对象中
-					if k == secondLevelGoodsCategory.CategoryId {
+					if _, ok := thirdLevelCategoryMap[secondLevelGoodsCategory.CategoryId]; ok {
 						//根据二级分类的id取出thirdLevelCategoryMap分组中的三级分类list
 						tempGoodsCategories := thirdLevelCategoryMap[secondLevelGoodsCategory.CategoryId]
 						var thirdLevelCategoryRes mallRes.ThirdLevelCategoryRes
@@ -52,21 +51,21 @@ func (m *MallGoodsCategoryService) GetCategoriesForIndex() (err error, firstLeve
 				}
 				//处理一级分类
 				if secondLevelCategoryVOS != nil {
-					var secondLevelCategoryMap map[int]interface{}
+					secondLevelCategoryMap := make(map[int]manage.MallGoodsCategory)
 					for _, secondLevelCategory := range secondLevelCategories {
 						secondLevelCategoryMap[secondLevelCategory.ParentId] = secondLevelCategory
 					}
-					for k, firstLevelGoodsCategory := range firstLevelCategories {
+					for _, firstLevelGoodsCategory := range firstLevelCategories {
 						var firstLevelCategoryVO mallRes.FirstLevelCategoryRes
 						err = copier.Copy(&firstLevelCategoryVO, &firstLevelGoodsCategory)
 						//如果该二级分类下有数据则放入 secondLevelCategoryVOS 对象中
-						if k == firstLevelGoodsCategory.CategoryId {
+						if _, ok := secondLevelCategoryMap[firstLevelGoodsCategory.CategoryId]; ok {
 							//根据二级分类的id取出thirdLevelCategoryMap分组中的三级分类list
 							tempGoodsCategories := secondLevelCategoryMap[firstLevelGoodsCategory.CategoryId]
 							var secondLevelCategoryRes mallRes.SecondLevelCategoryRes
 							err = copier.Copy(&secondLevelCategoryRes, &tempGoodsCategories)
 							firstLevelCategoryVO.SecondLevelCategoryVOS = append(firstLevelCategoryVO.SecondLevelCategoryVOS, secondLevelCategoryRes)
-							firstLevelCategoryVOS = append(firstLevelCategoryVOS, firstLevelCategoryVO)
+							newBeeMallIndexCategoryVOS = append(newBeeMallIndexCategoryVOS, firstLevelCategoryVO)
 						}
 					}
 				}
@@ -74,6 +73,7 @@ func (m *MallGoodsCategoryService) GetCategoriesForIndex() (err error, firstLeve
 		}
 	}
 	return
+
 }
 
 // 获取分类数据

@@ -40,7 +40,7 @@ func (m *MallOrderService) SaveOrder(token string, userAddress mall.MallUserAddr
 			return errors.New("已下架，无法生成订单"), orderNo
 		}
 	}
-	var newBeeMallGoodsMap map[int]manage.MallGoodsInfo
+	newBeeMallGoodsMap := make(map[int]manage.MallGoodsInfo)
 	for _, mallGoods := range newBeeMallGoods {
 		newBeeMallGoodsMap[mallGoods.GoodsId] = mallGoods
 	}
@@ -237,7 +237,7 @@ func (m *MallOrderService) MallOrderListBySearch(token string, req mallReq.Order
 			db.Where("order_id in ?", orderItems).Find(&orderItems)
 
 			//
-			var itemByOrderIdMap map[int]interface{}
+			itemByOrderIdMap := make(map[int]interface{})
 			for _, orderItem := range orderItems {
 				itemByOrderIdMap[orderItem.OrderId] = orderItem
 			}

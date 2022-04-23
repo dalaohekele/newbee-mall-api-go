@@ -161,7 +161,7 @@ func getMallShoppingCartItemVOS(cartItems []mall.MallShoppingCartItem) (err erro
 		return
 	}
 
-	var newBeeMallGoodsMap map[int]manage.MallGoodsInfo
+	newBeeMallGoodsMap := make(map[int]manage.MallGoodsInfo)
 	for _, goodsInfo := range newBeeMallGoods {
 		newBeeMallGoodsMap[goodsInfo.GoodsId] = goodsInfo
 	}
