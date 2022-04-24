@@ -1,6 +1,8 @@
 package mall
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/jinzhu/copier"
 	"main.go/global"
 	"main.go/model/common/enum"
@@ -11,61 +13,74 @@ import (
 type MallGoodsCategoryService struct {
 }
 
-func (m *MallGoodsCategoryService) GetCategoriesForIndex() (err error, newBeeMallIndexCategoryVOS []mallRes.FirstLevelCategoryRes) {
+func (m *MallGoodsCategoryService) GetCategoriesForIndex() (err error, firstLevelCategoryVOS []mallRes.FirstLevelCategoryRes) {
+
 	//获取一级分类的固定数量的数据
 	_, firstLevelCategories := selectByLevelAndParentIdsAndNumber([]int{0}, enum.LevelOne.Code(), 10)
 	if firstLevelCategories != nil {
-		var firstLevelIds []int
+		var firstLevelCategoryIds []int
 		for _, firstLevelCategory := range firstLevelCategories {
-			firstLevelIds = append(firstLevelIds, firstLevelCategory.CategoryId)
+			firstLevelCategoryIds = append(firstLevelCategoryIds, firstLevelCategory.CategoryId)
 		}
 		//获取二级分类的数据
-		_, secondLevelCategories := selectByLevelAndParentIdsAndNumber(firstLevelIds, enum.LevelTwo.Code(), 0)
+		_, secondLevelCategories := selectByLevelAndParentIdsAndNumber(firstLevelCategoryIds, enum.LevelTwo.Code(), 0)
 		if secondLevelCategories != nil {
-			var secondLevelIds []int
+			var secondLevelCategoryIds []int
 			for _, secondLevelCategory := range secondLevelCategories {
-				secondLevelIds = append(secondLevelIds, secondLevelCategory.CategoryId)
+				secondLevelCategoryIds = append(secondLevelCategoryIds, secondLevelCategory.CategoryId)
 			}
 			//获取三级分类的数据
-			_, thirdLevelCategories := selectByLevelAndParentIdsAndNumber(secondLevelIds, enum.LevelThree.Code(), 0)
+			_, thirdLevelCategories := selectByLevelAndParentIdsAndNumber(secondLevelCategoryIds, enum.LevelThree.Code(), 0)
 			if thirdLevelCategories != nil {
-				thirdLevelCategoryMap := make(map[int]manage.MallGoodsCategory)
 				//根据 parentId 将 thirdLevelCategories 分组
-				for _, thirdLevelCategory := range thirdLevelCategories {
-					thirdLevelCategoryMap[thirdLevelCategory.ParentId] = thirdLevelCategory
-				}
 				var secondLevelCategoryVOS []mallRes.SecondLevelCategoryRes
+				thirdLevelCategoryMap := make(map[int][]manage.MallGoodsCategory)
+				for _, thirdLevelCategory := range thirdLevelCategories {
+					thirdLevelCategoryMap[thirdLevelCategory.ParentId] = []manage.MallGoodsCategory{}
+				}
+				for k, v := range thirdLevelCategoryMap {
+					for _, third := range thirdLevelCategories {
+						if k == third.ParentId {
+							v = append(v, third)
+						}
+						thirdLevelCategoryMap[k] = v
+					}
+				}
+				str, _ := json.Marshal(thirdLevelCategoryMap)
+				fmt.Println(string(str))
 				//处理二级分类
-				for _, secondLevelGoodsCategory := range secondLevelCategories {
+				for _, secondLevelCategory := range secondLevelCategories {
+					//var list []mallRes.ThirdLevelCategoryRes
 					var secondLevelCategoryVO mallRes.SecondLevelCategoryRes
-					err = copier.Copy(&secondLevelCategoryVO, &secondLevelGoodsCategory)
+					err = copier.Copy(&secondLevelCategoryVO, &secondLevelCategory)
 					//如果该二级分类下有数据则放入 secondLevelCategoryVOS 对象中
-					if _, ok := thirdLevelCategoryMap[secondLevelGoodsCategory.CategoryId]; ok {
+					if _, ok := thirdLevelCategoryMap[secondLevelCategory.CategoryId]; ok {
 						//根据二级分类的id取出thirdLevelCategoryMap分组中的三级分类list
-						tempGoodsCategories := thirdLevelCategoryMap[secondLevelGoodsCategory.CategoryId]
-						var thirdLevelCategoryRes mallRes.ThirdLevelCategoryRes
+						tempGoodsCategories := thirdLevelCategoryMap[secondLevelCategory.CategoryId]
+						var thirdLevelCategoryRes []mallRes.ThirdLevelCategoryRes
 						err = copier.Copy(&thirdLevelCategoryRes, &tempGoodsCategories)
-						secondLevelCategoryVO.ThirdLevelCategoryVOS = append(secondLevelCategoryVO.ThirdLevelCategoryVOS, thirdLevelCategoryRes)
+						secondLevelCategoryVO.ThirdLevelCategoryVOS = thirdLevelCategoryRes
 						secondLevelCategoryVOS = append(secondLevelCategoryVOS, secondLevelCategoryVO)
 					}
+
 				}
 				//处理一级分类
 				if secondLevelCategoryVOS != nil {
-					secondLevelCategoryMap := make(map[int]manage.MallGoodsCategory)
-					for _, secondLevelCategory := range secondLevelCategories {
-						secondLevelCategoryMap[secondLevelCategory.ParentId] = secondLevelCategory
+					//根据 parentId 将 thirdLevelCategories 分组
+					secondLevelCategoryVOMap := make(map[int]mallRes.SecondLevelCategoryRes)
+					for _, v := range secondLevelCategories {
+						var secondLevelCategory mallRes.SecondLevelCategoryRes
+						copier.Copy(&secondLevelCategory, &v)
+						secondLevelCategoryVOMap[secondLevelCategory.ParentId] = secondLevelCategory
 					}
 					for _, firstLevelGoodsCategory := range firstLevelCategories {
-						var firstLevelCategoryVO mallRes.FirstLevelCategoryRes
-						err = copier.Copy(&firstLevelCategoryVO, &firstLevelGoodsCategory)
-						//如果该二级分类下有数据则放入 secondLevelCategoryVOS 对象中
-						if _, ok := secondLevelCategoryMap[firstLevelGoodsCategory.CategoryId]; ok {
-							//根据二级分类的id取出thirdLevelCategoryMap分组中的三级分类list
-							tempGoodsCategories := secondLevelCategoryMap[firstLevelGoodsCategory.CategoryId]
-							var secondLevelCategoryRes mallRes.SecondLevelCategoryRes
-							err = copier.Copy(&secondLevelCategoryRes, &tempGoodsCategories)
-							firstLevelCategoryVO.SecondLevelCategoryVOS = append(firstLevelCategoryVO.SecondLevelCategoryVOS, secondLevelCategoryRes)
-							newBeeMallIndexCategoryVOS = append(newBeeMallIndexCategoryVOS, firstLevelCategoryVO)
+						var newBeeMallIndexCategoryVO mallRes.FirstLevelCategoryRes
+						err = copier.Copy(&newBeeMallIndexCategoryVO, &firstLevelGoodsCategory)
+						//如果该一级分类下有数据则放入 newBeeMallIndexCategoryVOS 对象中
+						if _, ok := secondLevelCategoryVOMap[firstLevelGoodsCategory.CategoryId]; ok {
+							//根据一级分类的id取出secondLevelCategoryVOMap分组中的二级级分类list
+							newBeeMallIndexCategoryVO.SecondLevelCategoryVOS = secondLevelCategoryVOS
+							firstLevelCategoryVOS = append(firstLevelCategoryVOS, newBeeMallIndexCategoryVO)
 						}
 					}
 				}
@@ -73,7 +88,6 @@ func (m *MallGoodsCategoryService) GetCategoriesForIndex() (err error, newBeeMal
 		}
 	}
 	return
-
 }
 
 // 获取分类数据
