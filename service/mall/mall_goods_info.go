@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/jinzhu/copier"
 	"main.go/global"
-	mallReq "main.go/model/mall/request"
 	mallRes "main.go/model/mall/response"
 	"main.go/model/manage"
 	"main.go/utils"
@@ -13,18 +12,18 @@ import (
 type MallGoodsInfoService struct {
 }
 
-func (m *MallGoodsInfoService) MallGoodsListBySearch(req mallReq.GoodsSearchParams) (err error, searchGoodsList []mallRes.GoodsSearchResponse, total int64) {
+func (m *MallGoodsInfoService) MallGoodsListBySearch(pageNumber int, goodsCategoryId int, keyword string, orderBy string) (err error, searchGoodsList []mallRes.GoodsSearchResponse, total int64) {
 	// 根据搜索条件查询
 	var goodsList []manage.MallGoodsInfo
 	db := global.GVA_DB.Model(&manage.MallGoodsInfo{})
-	if req.Keyword != "" {
-		db.Where("goods_name like ? or goods_intro like ?", "%"+req.Keyword+"%", "%"+req.Keyword+"%")
+	if keyword != "" {
+		db.Where("goods_name like ? or goods_intro like ?", "%"+keyword+"%", "%"+keyword+"%")
 	}
-	if req.GoodsCategoryId >= 0 {
-		db.Where("goods_category_id= ?", req.GoodsCategoryId)
+	if goodsCategoryId >= 0 {
+		db.Where("goods_category_id= ?", goodsCategoryId)
 	}
 	err = db.Count(&total).Error
-	switch req.OrderBy {
+	switch orderBy {
 	case "new":
 		db.Order("goods_id desc")
 	case "price":
@@ -33,7 +32,7 @@ func (m *MallGoodsInfoService) MallGoodsListBySearch(req mallReq.GoodsSearchPara
 		db.Order("stock_num desc")
 	}
 	limit := 10
-	offset := 10 * (req.PageNumber - 1)
+	offset := 10 * (pageNumber - 1)
 	err = db.Limit(limit).Offset(offset).Find(&goodsList).Error
 	// 返回查询结果
 	for _, goods := range goodsList {
