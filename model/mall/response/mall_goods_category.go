@@ -1,24 +1,24 @@
 package response
 
 //首页分类数据VO(第三级)
-type ThirdLevelCategoryRes struct {
+type ThirdLevelCategoryVO struct {
 	CategoryId    int    `json:"categoryId"`
 	CategoryLevel int    `json:"categoryLevel"`
 	CategoryName  string `json:"categoryName" `
 }
 
-type SecondLevelCategoryRes struct {
-	CategoryId            int                     `json:"categoryId"`
-	ParentId              int                     `json:"parentId"`
-	CategoryLevel         int                     `json:"categoryLevel"`
-	CategoryName          string                  `json:"categoryName" `
-	ThirdLevelCategoryVOS []ThirdLevelCategoryRes `json:"thirdLevelCategoryVOS"`
+type SecondLevelCategoryVO struct {
+	CategoryId            int                    `json:"categoryId"`
+	ParentId              int                    `json:"parentId"`
+	CategoryLevel         int                    `json:"categoryLevel"`
+	CategoryName          string                 `json:"categoryName" `
+	ThirdLevelCategoryVOS []ThirdLevelCategoryVO `json:"thirdLevelCategoryVOS"`
 }
 
-type FirstLevelCategoryRes struct {
-	CategoryId             int                      `json:"categoryId"`
-	ParentId               int                      `json:"parentId"`
-	CategoryLevel          int                      `json:"categoryLevel"`
-	CategoryName           string                   `json:"categoryName" `
-	SecondLevelCategoryVOS []SecondLevelCategoryRes `json:"secondLevelCategoryVOS"`
+type NewBeeMallIndexCategoryVO struct {
+	CategoryId int `json:"categoryId"`
+	//ParentId               int                      `json:"parentId"`
+	CategoryLevel          int                     `json:"categoryLevel"`
+	CategoryName           string                  `json:"categoryName" `
+	SecondLevelCategoryVOS []SecondLevelCategoryVO `json:"secondLevelCategoryVOS"`
 }
