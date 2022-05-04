@@ -10,7 +10,7 @@ type MallOrderResponse struct {
 	OrderStatus            int                     `json:"orderStatus"`
 	OrderStatusString      string                  `json:"orderStatusString"`
 	CreateTime             common.JSONTime         `json:"createTime"`
-	NewBeeMallOrderItemVOS []NewBeeMallOrderItemVO `json:"newBeeMallOrderItemVos"`
+	NewBeeMallOrderItemVOS []NewBeeMallOrderItemVO `json:"newBeeMallOrderItemVOS"`
 }
 
 type NewBeeMallOrderItemVO struct {
@@ -31,5 +31,5 @@ type MallOrderDetailVO struct {
 	OrderStatus            int                     `json:"orderStatus"`
 	OrderStatusString      string                  `json:"orderStatusString"`
 	CreateTime             common.JSONTime         `json:"createTime"`
-	NewBeeMallOrderItemVOS []NewBeeMallOrderItemVO `json:"newBeeMallOrderItemVos"`
+	NewBeeMallOrderItemVOS []NewBeeMallOrderItemVO `json:"newBeeMallOrderItemVOS"`
 }

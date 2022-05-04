@@ -4,9 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"main.go/global"
-	"main.go/model/common/request"
 	"main.go/model/common/response"
-	"main.go/model/mall"
 	mallReq "main.go/model/mall/request"
 	"main.go/utils"
 )
@@ -59,11 +57,8 @@ func (m *MallUserApi) UserLogin(c *gin.Context) {
 }
 
 func (m *MallUserApi) UserLogout(c *gin.Context) {
-	var user mall.MallUser
-	_ = c.ShouldBindJSON(&user)
-	var ids request.IdsReq
-	ids.Ids = append(ids.Ids, int(user.UserId))
-	if err := mallUserTokenService.DeleteMallUserTokenByIds(ids); err != nil {
+	token := c.GetHeader("token")
+	if err := mallUserTokenService.DeleteMallUserTokenByIds(token); err != nil {
 		response.FailWithMessage("登出失败", c)
 	} else {
 		response.OkWithMessage("登出成功", c)

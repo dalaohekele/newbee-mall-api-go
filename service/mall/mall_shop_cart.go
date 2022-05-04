@@ -130,19 +130,18 @@ func (m *MallShopCartService) DeleteMallCartItem(token string, id int) (err erro
 	return
 }
 
-func (m *MallShopCartService) GetCartItemsForSettle(token string, ids []int) (err error, cartItemRes []mallRes.CartItemResponse) {
+func (m *MallShopCartService) GetCartItemsForSettle(token string, cartItemIds []int) (err error, cartItemRes []mallRes.CartItemResponse) {
 	var userToken mall.MallUserToken
 	err = global.GVA_DB.Where("token =?", token).First(&userToken).Error
 	if err != nil {
 		return errors.New("不存在的用户"), cartItemRes
 	}
 	var shopCartItems []mall.MallShoppingCartItem
-	err = global.GVA_DB.Where("cart_item_id in ? and user_id = ? and is_deleted = 0", ids).Find(&shopCartItems).Error
+	err = global.GVA_DB.Where("cart_item_id in (?) and user_id = ? and is_deleted = 0", cartItemIds, userToken.UserId).Find(&shopCartItems).Error
 	if err != nil {
 		return
 	}
 	_, cartItemRes = getMallShoppingCartItemVOS(shopCartItems)
-
 	//购物车算价
 	priceTotal := 0
 	for _, cartItem := range cartItemRes {

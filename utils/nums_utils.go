@@ -49,3 +49,13 @@ func GenOrderNo() string {
 	timestamp := strconv.FormatInt(time.Now().UnixNano()/1e6, 10)
 	return timestamp + sb.String()
 }
+
+// '2,3' 转换为[2,3]
+func StrToInt(strNum string) (nums []int) {
+	strNums := strings.Split(strNum, ",")
+	for _, s := range strNums {
+		i, _ := strconv.Atoi(s)
+		nums = append(nums, i)
+	}
+	return
+}

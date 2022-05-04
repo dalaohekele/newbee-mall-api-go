@@ -44,9 +44,9 @@ func (m *MallOrderApi) SaveOrder(c *gin.Context) {
 }
 
 func (m *MallOrderApi) PaySuccess(c *gin.Context) {
-	var req mallReq.PaySuccessParams
-	_ = c.ShouldBindQuery(&req)
-	if err := mallOrderService.PaySuccess(req.OrderNo, req.PayType); err != nil {
+	orderNo := c.Query("orderNo")
+	payType, _ := strconv.Atoi(c.Query("payType"))
+	if err := mallOrderService.PaySuccess(orderNo, payType); err != nil {
 		global.GVA_LOG.Error("订单支付失败", zap.Error(err))
 		response.FailWithMessage("订单支付失败:"+err.Error(), c)
 	}
@@ -77,8 +77,7 @@ func (m *MallOrderApi) CancelOrder(c *gin.Context) {
 
 }
 func (m *MallOrderApi) OrderDetailPage(c *gin.Context) {
-	var orderNo string
-	_ = c.ShouldBindQuery(&orderNo)
+	orderNo := c.Param("orderNo")
 	token := c.GetHeader("token")
 	if err, orderDetail := mallOrderService.GetOrderDetailByOrderNo(token, orderNo); err != nil {
 		global.GVA_LOG.Error("查询订单详情接口", zap.Error(err))
@@ -90,25 +89,29 @@ func (m *MallOrderApi) OrderDetailPage(c *gin.Context) {
 
 func (m *MallOrderApi) OrderList(c *gin.Context) {
 	token := c.GetHeader("token")
-	var req mallReq.OrderSearchParams
-	_ = c.ShouldBindQuery(&req)
-	status, _ := strconv.Atoi(req.Status)
-	if !utils.NumsInList(status, []int{0, 1, 2, 3, 4}) {
-		response.FailWithMessage("非法搜索参数", c)
+	pageNumber, _ := strconv.Atoi(c.Query("pageNumber"))
+	status := c.Query("status")
+	if pageNumber <= 0 {
+		pageNumber = 1
 	}
-	if req.PageNumber <= 0 {
-		req.PageNumber = 1
-	}
-	if err, list, total := mallOrderService.MallOrderListBySearch(token, req); err != nil {
+	if err, list, total := mallOrderService.MallOrderListBySearch(token, pageNumber, status); err != nil {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败"+err.Error(), c)
+	} else if len(list) < 1 {
+		// 前端项目这里有一个取数逻辑，如果数组为空，数组需要为[] 不能是Null
+		response.OkWithDetailed(response.PageResult{
+			List:       make([]interface{}, 0),
+			TotalCount: total,
+			CurrPage:   pageNumber,
+			PageSize:   5,
+		}, "SUCCESS", c)
 	} else {
 		response.OkWithDetailed(response.PageResult{
 			List:       list,
 			TotalCount: total,
-			CurrPage:   req.PageNumber,
+			CurrPage:   pageNumber,
 			PageSize:   5,
-		}, "获取成功", c)
+		}, "SUCCESS", c)
 	}
 
 }

@@ -3,13 +3,15 @@ package mall
 import (
 	"github.com/gin-gonic/gin"
 	v1 "main.go/api/v1"
+	"main.go/middleware"
 )
 
 type MallOrderRouter struct {
 }
 
 func (m *MallOrderRouter) InitMallOrderRouter(Router *gin.RouterGroup) {
-	mallOrderRouter := Router.Group("v1")
+	mallOrderRouter := Router.Group("v1").Use(middleware.UserJWTAuth())
+
 	var mallOrderRouterApi = v1.ApiGroupApp.MallApiGroup.MallOrderApi
 	{
 		mallOrderRouter.GET("/paySuccess", mallOrderRouterApi.PaySuccess)             //模拟支付成功回调的接口

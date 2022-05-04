@@ -2,7 +2,6 @@ package mall
 
 import (
 	"main.go/global"
-	manageReq "main.go/model/common/request"
 	"main.go/model/mall"
 )
 
@@ -14,7 +13,7 @@ func (m *MallUserTokenService) ExistUserToken(token string) (err error, mallUser
 	return
 }
 
-func (m *MallUserTokenService) DeleteMallUserTokenByIds(ids manageReq.IdsReq) (err error) {
-	err = global.GVA_DB.Delete(&[]mall.MallUserToken{}, "user_id in ?", ids.Ids).Error
+func (m *MallUserTokenService) DeleteMallUserTokenByIds(token string) (err error) {
+	err = global.GVA_DB.Delete(&[]mall.MallUserToken{}, "token =?", token).Error
 	return err
 }

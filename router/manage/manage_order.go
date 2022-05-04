@@ -3,13 +3,14 @@ package manage
 import (
 	"github.com/gin-gonic/gin"
 	v1 "main.go/api/v1"
+	"main.go/middleware"
 )
 
 type ManageOrderRouter struct {
 }
 
 func (r *ManageOrderRouter) InitManageOrderRouter(Router *gin.RouterGroup) {
-	mallOrderRouter := Router.Group("v1")
+	mallOrderRouter := Router.Group("v1").Use(middleware.AdminJWTAuth())
 	var mallOrderApi = v1.ApiGroupApp.ManageApiGroup.ManageOrderApi
 	{
 		mallOrderRouter.PUT("orders/checkDone", mallOrderApi.CheckDoneOrder) // 发货

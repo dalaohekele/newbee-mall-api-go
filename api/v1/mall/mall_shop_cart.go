@@ -4,9 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"main.go/global"
-	"main.go/model/common/request"
 	"main.go/model/common/response"
 	mallReq "main.go/model/mall/request"
+	"main.go/utils"
 	"strconv"
 )
 
@@ -55,15 +55,11 @@ func (m *MallShopCartApi) DelMallShoppingCartItem(c *gin.Context) {
 	response.OkWithMessage("修改购物车成功", c)
 }
 
-// todo 这里的传参貌似有异常,需要调试
 func (m *MallShopCartApi) ToSettle(c *gin.Context) {
-	var IDS request.IdsReq
-	_ = c.ShouldBindJSON(&IDS)
-	if len(IDS.Ids) < 1 {
-		response.FailWithMessage("参数异常", c)
-	}
+	cartItemIdsStr := c.Query("cartItemIds")
 	token := c.GetHeader("token")
-	if err, cartItemRes := mallShopCartService.GetCartItemsForSettle(token, IDS.Ids); err != nil {
+	cartItemIds := utils.StrToInt(cartItemIdsStr)
+	if err, cartItemRes := mallShopCartService.GetCartItemsForSettle(token, cartItemIds); err != nil {
 		global.GVA_LOG.Error("获取购物明细异常：", zap.Error(err))
 		response.FailWithMessage("获取购物明细异常:"+err.Error(), c)
 	} else {
