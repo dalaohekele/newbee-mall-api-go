@@ -17,6 +17,8 @@ func (m *MallUserAddressApi) AddressList(c *gin.Context) {
 	if err, userAddressList := mallUserAddressService.GetMyAddress(token); err != nil {
 		global.GVA_LOG.Error("获取地址失败", zap.Error(err))
 		response.FailWithMessage("获取地址失败:"+err.Error(), c)
+	} else if len(userAddressList) == 0 {
+		response.OkWithData(nil, c)
 	} else {
 		response.OkWithData(userAddressList, c)
 	}

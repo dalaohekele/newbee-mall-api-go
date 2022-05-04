@@ -3,13 +3,14 @@ package mall
 import (
 	"github.com/gin-gonic/gin"
 	v1 "main.go/api/v1"
+	"main.go/middleware"
 )
 
 type MallUserAddressRouter struct {
 }
 
 func (m *MallUserRouter) InitMallUserAddressRouter(Router *gin.RouterGroup) {
-	mallUserAddressRouter := Router.Group("v1")
+	mallUserAddressRouter := Router.Group("v1").Use(middleware.UserJWTAuth())
 	var mallUserAddressApi = v1.ApiGroupApp.MallApiGroup.MallUserAddressApi
 	{
 		mallUserAddressRouter.GET("/address", mallUserAddressApi.AddressList)                       //用户地址

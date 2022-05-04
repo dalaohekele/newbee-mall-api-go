@@ -66,7 +66,7 @@ func (m *MallUserService) GetUserDetail(token string) (err error, userDetail mal
 }
 
 func (m *MallUserService) UserLogin(params mallReq.UserLoginParam) (err error, user mall.MallUser, userToken mall.MallUserToken) {
-	err = global.GVA_DB.Where("login_user_name=? AND login_password=?", params.UserName, params.PasswordMd5).First(&user).Error
+	err = global.GVA_DB.Where("login_name=? AND password_md5=?", params.LoginName, params.PasswordMd5).First(&user).Error
 	if user != (mall.MallUser{}) {
 		token := getNewToken(time.Now().UnixNano()/1e6, int(user.UserId))
 		global.GVA_DB.Where("user_id", user.UserId).First(&token)
@@ -80,7 +80,7 @@ func (m *MallUserService) UserLogin(params mallReq.UserLoginParam) (err error, u
 			userToken.Token = token
 			userToken.UpdateTime = nowDate
 			userToken.ExpireTime = expireDate
-			if err = global.GVA_DB.Create(&userToken).Error; err != nil {
+			if err = global.GVA_DB.Save(&userToken).Error; err != nil {
 				return
 			}
 		} else {

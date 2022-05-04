@@ -23,23 +23,6 @@ func (m *MallShopCartApi) CartItemList(c *gin.Context) {
 	}
 }
 
-func (m *MallShopCartApi) CartItemListByPage(c *gin.Context) {
-	token := c.GetHeader("token")
-	var pageInfo mallReq.MallShopCartSearch
-	_ = c.ShouldBindQuery(&pageInfo)
-	if err, list, total := mallShopCartService.GetShopCartListByPage(token, pageInfo); err != nil {
-		global.GVA_LOG.Error("获取购物车失败", zap.Error(err))
-		response.FailWithMessage("获取购物车失败:"+err.Error(), c)
-	} else {
-		response.OkWithDetailed(response.PageResult{
-			List:       list,
-			TotalCount: total,
-			CurrPage:   pageInfo.PageNumber,
-			PageSize:   pageInfo.PageSize,
-		}, "获取成功", c)
-	}
-}
-
 func (m *MallShopCartApi) SaveMallShoppingCartItem(c *gin.Context) {
 	token := c.GetHeader("token")
 	var req mallReq.SaveCartItemParam

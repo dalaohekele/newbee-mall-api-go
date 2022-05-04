@@ -13,13 +13,13 @@ import (
 type MallUserAddressService struct {
 }
 
-func (m *MallUserAddressService) GetMyAddress(token string) (err error, userAddress mall.MallUserAddress) {
+func (m *MallUserAddressService) GetMyAddress(token string) (err error, userAddress []mall.MallUserAddress) {
 	var userToken mall.MallUserToken
 	err = global.GVA_DB.Where("token =?", token).First(&userToken).Error
 	if err != nil {
 		return errors.New("不存在的用户"), userAddress
 	}
-	err = global.GVA_DB.Where("user_id=?", userToken.UserId).First(&userAddress).Error
+	global.GVA_DB.Where("user_id=? and is_deleted=0", userToken.UserId).Find(&userAddress)
 	return
 }
 
@@ -29,8 +29,12 @@ func (m *MallUserAddressService) SaveUserAddress(token string, req mallReq.AddAd
 		return errors.New("不存在的用户")
 	}
 	// 是否新增了默认地址，将之前的默认地址设置为非默认
+	var defaultAddress mall.MallUserAddress
+	copier.Copy(&defaultAddress, &req)
+	defaultAddress.CreateTime = common.JSONTime{Time: time.Now()}
+	defaultAddress.UpdateTime = common.JSONTime{Time: time.Now()}
+	defaultAddress.UserId = userToken.UserId
 	if req.DefaultFlag == 1 {
-		var defaultAddress mall.MallUserAddress
 		global.GVA_DB.Where("user_id=? and default_flag =1 and is_deleted = 0", userToken.UserId).First(&defaultAddress)
 		if defaultAddress != (mall.MallUserAddress{}) {
 			defaultAddress.DefaultFlag = 0
@@ -41,7 +45,7 @@ func (m *MallUserAddressService) SaveUserAddress(token string, req mallReq.AddAd
 			}
 		}
 	}
-	err = global.GVA_DB.Create(&req).Error
+	err = global.GVA_DB.Create(&defaultAddress).Error
 	return
 }
 
@@ -51,17 +55,30 @@ func (m *MallUserAddressService) UpdateUserAddress(token string, req mallReq.Upd
 		return errors.New("不存在的用户")
 	}
 	var userAddress mall.MallUserAddress
-	if err = global.GVA_DB.Where("address_id =?", req.AddressId).First(&userAddress).Error; err != nil {
+	if err = global.GVA_DB.Where("address_id =? and user_id =?", req.AddressId, userToken.UserId).First(&userAddress).Error; err != nil {
 		return errors.New("不存在的用户地址")
 	}
 	if userToken.UserId != userAddress.UserId {
 		return errors.New("禁止该操作！")
+	}
+	if req.DefaultFlag == 1 {
+		var defaultUserAddress mall.MallUserAddress
+		global.GVA_DB.Where("user_id=? and default_flag =1 and is_deleted = 0", userToken.UserId).First(&defaultUserAddress)
+		if defaultUserAddress != (mall.MallUserAddress{}) {
+			defaultUserAddress.DefaultFlag = 0
+			defaultUserAddress.UpdateTime = common.JSONTime{time.Now()}
+			err = global.GVA_DB.Save(&defaultUserAddress).Error
+			if err != nil {
+				return
+			}
+		}
 	}
 	err = copier.Copy(&userAddress, &req)
 	if err != nil {
 		return
 	}
 	userAddress.UpdateTime = common.JSONTime{time.Now()}
+	userAddress.UserId = userToken.UserId
 	err = global.GVA_DB.Save(&userAddress).Error
 	return
 }

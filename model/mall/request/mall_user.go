@@ -14,6 +14,6 @@ type UpdateUserInfoParam struct {
 }
 
 type UserLoginParam struct {
-	UserName    string `json:"userName"`
+	LoginName   string `json:"loginName"`
 	PasswordMd5 string `json:"passwordMd5"`
 }

@@ -17,36 +17,36 @@ type MallShopCartService struct {
 }
 
 // 不分页
-func (m *MallShopCartService) GetMyShoppingCartItems(token string) (err error, cartItem mallRes.CartItemResponse) {
+func (m *MallShopCartService) GetMyShoppingCartItems(token string) (err error, cartItems []mallRes.CartItemResponse) {
 	var userToken mall.MallUserToken
+	var shopCartItems []mall.MallShoppingCartItem
+	var goodsInfos []manage.MallGoodsInfo
 	err = global.GVA_DB.Where("token =?", token).First(&userToken).Error
 	if err != nil {
-		return errors.New("不存在的用户"), cartItem
+		return errors.New("不存在的用户"), cartItems
 	}
-	global.GVA_DB.Where("user_id", userToken.UserId).Find(&cartItem)
-	return
-}
-
-//分页
-func (m *MallShopCartService) GetShopCartListByPage(token string, info mallReq.MallShopCartSearch) (err error, list interface{}, total int64) {
-	var userToken mall.MallUserToken
-	err = global.GVA_DB.Where("token =?", token).First(&userToken).Error
-	if err != nil {
-		return errors.New("不存在的用户"), list, total
+	global.GVA_DB.Where("user_id=? and is_deleted = 0", userToken.UserId).Find(&shopCartItems)
+	var goodsIds []int
+	for _, shopcartItem := range shopCartItems {
+		goodsIds = append(goodsIds, shopcartItem.GoodsId)
+	}
+	global.GVA_DB.Where("goods_id in ?", goodsIds).Find(&goodsInfos)
+	goodsMap := make(map[int]manage.MallGoodsInfo)
+	for _, goodsInfo := range goodsInfos {
+		goodsMap[goodsInfo.GoodsId] = goodsInfo
+	}
+	for _, v := range shopCartItems {
+		var cartItem mallRes.CartItemResponse
+		copier.Copy(&cartItem, &v)
+		if _, ok := goodsMap[v.GoodsId]; ok {
+			goodsInfo := goodsMap[v.GoodsId]
+			cartItem.GoodsName = goodsInfo.GoodsName
+			cartItem.GoodsCoverImg = goodsInfo.GoodsCoverImg
+			cartItem.SellingPrice = goodsInfo.SellingPrice
+		}
+		cartItems = append(cartItems, cartItem)
 	}
 
-	limit := info.PageSize
-	offset := info.PageSize * (info.PageNumber - 1)
-	var cartItems []mall.MallShoppingCartItem
-	// 创建db
-	db := global.GVA_DB.Model(&mall.MallShoppingCartItem{})
-
-	db.Where("user_id", userToken.UserId)
-	err = db.Count(&total).Error
-	if err != nil {
-		return
-	}
-	err = db.Limit(limit).Offset(offset).Order("update_time desc").Find(&cartItems).Error
 	return
 }
 
@@ -83,6 +83,8 @@ func (m *MallShopCartService) SaveMallCartItem(token string, req mallReq.SaveCar
 		return err
 	}
 	shopCartItem.UserId = userToken.UserId
+	shopCartItem.CreateTime = common.JSONTime{Time: time.Now()}
+	shopCartItem.UpdateTime = common.JSONTime{Time: time.Now()}
 	err = global.GVA_DB.Save(&shopCartItem).Error
 	return
 }
