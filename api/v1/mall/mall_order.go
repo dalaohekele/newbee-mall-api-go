@@ -54,8 +54,7 @@ func (m *MallOrderApi) PaySuccess(c *gin.Context) {
 }
 
 func (m *MallOrderApi) FinishOrder(c *gin.Context) {
-	var orderNo string
-	_ = c.ShouldBindQuery(&orderNo)
+	orderNo := c.Param("orderNo")
 	token := c.GetHeader("token")
 	if err := mallOrderService.FinishOrder(token, orderNo); err != nil {
 		global.GVA_LOG.Error("订单签收失败", zap.Error(err))
@@ -66,8 +65,7 @@ func (m *MallOrderApi) FinishOrder(c *gin.Context) {
 }
 
 func (m *MallOrderApi) CancelOrder(c *gin.Context) {
-	var orderNo string
-	_ = c.ShouldBindQuery(&orderNo)
+	orderNo := c.Param("orderNo")
 	token := c.GetHeader("token")
 	if err := mallOrderService.CancelOrder(token, orderNo); err != nil {
 		global.GVA_LOG.Error("订单签收失败", zap.Error(err))

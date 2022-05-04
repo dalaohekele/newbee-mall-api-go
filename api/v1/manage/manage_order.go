@@ -6,8 +6,6 @@ import (
 	"main.go/global"
 	"main.go/model/common/request"
 	"main.go/model/common/response"
-	manageReq "main.go/model/manage/request"
-	"strconv"
 )
 
 type ManageOrderApi struct {
@@ -51,20 +49,22 @@ func (m *ManageOrderApi) CloseOrder(c *gin.Context) {
 
 // FindMallOrder 用id查询MallOrder
 func (m *ManageOrderApi) FindMallOrder(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("orderId"))
-	if err, mallOrder := mallOrderService.GetMallOrder(id); err != nil {
+	id := c.Param("orderId")
+	if err, newBeeMallOrderDetailVO := mallOrderService.GetMallOrder(id); err != nil {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
-		response.OkWithData(gin.H{"mallOrder": mallOrder}, c)
+		response.OkWithData(newBeeMallOrderDetailVO, c)
 	}
 }
 
 // GetMallOrderList 分页获取MallOrder列表
 func (m *ManageOrderApi) GetMallOrderList(c *gin.Context) {
-	var pageInfo manageReq.MallOrderSearch
+	var pageInfo request.PageInfo
 	_ = c.ShouldBindQuery(&pageInfo)
-	if err, list, total := mallOrderService.GetMallOrderInfoList(pageInfo); err != nil {
+	orderNo := c.Query("orderNo")
+	orderStatus := c.Query("orderStatus")
+	if err, list, total := mallOrderService.GetMallOrderInfoList(pageInfo, orderNo, orderStatus); err != nil {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {

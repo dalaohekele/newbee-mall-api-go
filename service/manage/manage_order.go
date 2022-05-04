@@ -2,12 +2,14 @@ package manage
 
 import (
 	"errors"
+	"github.com/jinzhu/copier"
 	"main.go/global"
 	"main.go/model/common"
+	"main.go/model/common/enum"
 	"main.go/model/common/request"
 	"main.go/model/manage"
-	manageReq "main.go/model/manage/request"
-	"main.go/utils"
+	manageRes "main.go/model/manage/response"
+	"strconv"
 	"time"
 )
 
@@ -93,23 +95,43 @@ func (m *ManageOrderService) CloseOrder(ids request.IdsReq) (err error) {
 }
 
 // GetMallOrder 根据id获取MallOrder记录
-func (m *ManageOrderService) GetMallOrder(id int) (err error, mallOrder manage.MallOrder) {
-	err = global.GVA_DB.Where("id = ?", id).First(&mallOrder).Error
+func (m *ManageOrderService) GetMallOrder(id string) (err error, newBeeMallOrderDetailVO manageRes.NewBeeMallOrderDetailVO) {
+	var newBeeMallOrder manage.MallOrder
+	if err = global.GVA_DB.Where("order_id = ?", id).First(&newBeeMallOrder).Error; err != nil {
+		return
+	}
+	var orderItems []manage.MallOrderItem
+	if err = global.GVA_DB.Where("order_id = ?", newBeeMallOrder.OrderId).Find(&orderItems).Error; err != nil {
+		return
+	}
+	//获取订单项数据
+	if len(orderItems) > 0 {
+		var newBeeMallOrderItemVOS []manageRes.NewBeeMallOrderItemVO
+		copier.Copy(&newBeeMallOrderItemVOS, &orderItems)
+		copier.Copy(&newBeeMallOrderDetailVO, &newBeeMallOrder)
+
+		_, OrderStatusStr := enum.GetNewBeeMallOrderStatusEnumByStatus(newBeeMallOrderDetailVO.OrderStatus)
+		_, payTapStr := enum.GetNewBeeMallOrderStatusEnumByStatus(newBeeMallOrderDetailVO.PayType)
+		newBeeMallOrderDetailVO.OrderStatusString = OrderStatusStr
+		newBeeMallOrderDetailVO.PayTypeString = payTapStr
+		newBeeMallOrderDetailVO.NewBeeMallOrderItemVOS = newBeeMallOrderItemVOS
+	}
 	return
 }
 
 // GetMallOrderInfoList 分页获取MallOrder记录
-func (m *ManageOrderService) GetMallOrderInfoList(info manageReq.MallOrderSearch) (err error, list interface{}, total int64) {
+func (m *ManageOrderService) GetMallOrderInfoList(info request.PageInfo, orderNo string, orderStatus string) (err error, list interface{}, total int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.PageNumber - 1)
 	// 创建db
 	db := global.GVA_DB.Model(&manage.MallOrder{})
-	if info.OrderNo != "" {
-		db.Where("order_no", info.OrderNo)
+	if orderNo != "" {
+		db.Where("order_no", orderNo)
 	}
 	// 0.待支付 1.已支付 2.配货完成 3:出库成功 4.交易成功 -1.手动关闭 -2.超时关闭 -3.商家关闭
-	if utils.NumsInList(info.OrderStatus, []int{-3, -2, -1, 0, 1, 2, 3, 4}) {
-		db.Where("order_status", info.OrderStatus)
+	if orderStatus != "" {
+		status, _ := strconv.Atoi(orderStatus)
+		db.Where("order_status", status)
 	}
 	var mallOrders []manage.MallOrder
 	// 如果有条件搜索 下方会自动创建搜索语句
