@@ -32,7 +32,7 @@ go build -o server main.go (windows编译命令为go build -o server.exe main.go
 
 
 [前台商城](https://github.com/newbee-ltd/newbee-mall-vue3-app)
-后端接口正在进行中.....
+直接注册账号就可以了
 
 
 ### 目录说明
