@@ -67,6 +67,6 @@ go build -o server main.go (windows编译命令为go build -o server.exe main.go
 | `utils`      | 工具包                  | 工具函数封装            |
 
 ### 项目展示
-![img.png](img.png)
+![img.png](static-files/img.png)
 
-![img_1.png](img_1.png)
+![img_1.png](static-files/img_1.png)
