@@ -9,6 +9,12 @@
 - [新蜂商城 Vue3 版本 newbee-mall-vue3-app](https://github.com/newbee-ltd/newbee-mall-vue3-app)
 - [新蜂商城后台管理系统 Vue3 版本 vue3-admin](https://github.com/newbee-ltd/vue3-admin)
 
+**如果觉得项目还不错的话可以给项目一个 Star 吧，**
+## 联系作者
+
+> 大家有任何问题或者建议都可以在 [issues](https://github.com/627886474/newbee-mall-api-go/issues) 中反馈给我
+
+
 ### 本地启动
 -- --
 #### 后端项目启动
