@@ -26,6 +26,7 @@ func AdminJWTAuth() gin.HandlerFunc {
 		}
 		if time.Now().After(mallAdminUserToken.ExpireTime) {
 			response.FailWithDetailed(nil, "授权已过期", c)
+			manageAdminUserTokenService.DeleteMallAdminUserToken(token)
 			c.Abort()
 			return
 		}
@@ -50,6 +51,7 @@ func UserJWTAuth() gin.HandlerFunc {
 		}
 		if time.Now().After(mallUserToken.ExpireTime) {
 			response.FailWithDetailed(nil, "授权已过期", c)
+			mallUserTokenService.DeleteMallUserToken(token)
 			c.Abort()
 			return
 		}

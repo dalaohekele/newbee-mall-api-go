@@ -139,6 +139,6 @@ func (m *ManageOrderService) GetMallOrderInfoList(info request.PageInfo, orderNo
 	if err != nil {
 		return
 	}
-	err = db.Limit(limit).Offset(offset).Find(&mallOrders).Error
+	err = db.Limit(limit).Offset(offset).Order("update_time desc").Find(&mallOrders).Error
 	return err, mallOrders, total
 }

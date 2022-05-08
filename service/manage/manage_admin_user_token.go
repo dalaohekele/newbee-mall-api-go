@@ -2,7 +2,6 @@ package manage
 
 import (
 	"main.go/global"
-	manageReq "main.go/model/common/request"
 	"main.go/model/manage"
 )
 
@@ -14,7 +13,7 @@ func (m *ManageAdminUserTokenService) ExistAdminToken(token string) (err error, 
 	return
 }
 
-func (m *ManageAdminUserTokenService) DeleteMallAdminUserTokenByIds(ids manageReq.IdsReq) (err error) {
-	err = global.GVA_DB.Delete(&[]manage.MallAdminUserToken{}, "id in ?", ids.Ids).Error
+func (m *ManageAdminUserTokenService) DeleteMallAdminUserToken(token string) (err error) {
+	err = global.GVA_DB.Delete(&[]manage.MallAdminUserToken{}, "token =?", token).Error
 	return err
 }

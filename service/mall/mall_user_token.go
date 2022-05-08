@@ -13,7 +13,7 @@ func (m *MallUserTokenService) ExistUserToken(token string) (err error, mallUser
 	return
 }
 
-func (m *MallUserTokenService) DeleteMallUserTokenByIds(token string) (err error) {
+func (m *MallUserTokenService) DeleteMallUserToken(token string) (err error) {
 	err = global.GVA_DB.Delete(&[]mall.MallUserToken{}, "token =?", token).Error
 	return err
 }

@@ -58,7 +58,7 @@ func (m *MallUserApi) UserLogin(c *gin.Context) {
 
 func (m *MallUserApi) UserLogout(c *gin.Context) {
 	token := c.GetHeader("token")
-	if err := mallUserTokenService.DeleteMallUserTokenByIds(token); err != nil {
+	if err := mallUserTokenService.DeleteMallUserToken(token); err != nil {
 		response.FailWithMessage("登出失败", c)
 	} else {
 		response.OkWithMessage("登出成功", c)
