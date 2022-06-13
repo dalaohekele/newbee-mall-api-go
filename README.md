@@ -14,6 +14,9 @@
 
 > 大家有任何问题或者建议都可以在 [issues](https://github.com/627886474/newbee-mall-api-go/issues) 中反馈给我
 
+### 项目讲解
+-- --
+- [【go商城】gin+gorm实现CRUD](https://blog.csdn.net/zxc19854/article/details/125267635)
 
 ### 本地启动
 -- --
