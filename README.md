@@ -1,6 +1,6 @@
 ![](static-files/newbee-mall.png)
 
-## 代码已迁移至[newbee-mall仓库](https://github.com/newbee-ltd/newbee-mall-api-go)
+## 代码已迁移至[newbee-mall仓库](https://github.com/newbee-ltd/newbee-mall-api-go),本地址后续不维护
 ### newbee-mall商城go版本
 
 本项目为[新蜂商城后端接口 newbee-mall-api](https://github.com/newbee-ltd/newbee-mall-api) 的go版本,使用原版本的所有数据结构 
